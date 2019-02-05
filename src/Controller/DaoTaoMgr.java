@@ -1,0 +1,42 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package Controller;
+
+import DAO.DaoTaoDAOImpl;
+import entities.NhanVien;
+import entities.PhongBan;
+import java.util.List;
+
+/**
+ *
+ * @author Win
+ */
+public class DaoTaoMgr {
+
+    public DaoTaoDAOImpl daoTaoDAOImpl = new DaoTaoDAOImpl();
+
+    public List<PhongBan> getListPhongBan() {
+        try {
+
+            return daoTaoDAOImpl.getListPhongBan();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public List<NhanVien> getListNhanVien(String maPhongBan) {
+        try {
+
+            return daoTaoDAOImpl.getListNhanVien(maPhongBan);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+}
