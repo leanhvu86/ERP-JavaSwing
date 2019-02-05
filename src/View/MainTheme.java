@@ -30,6 +30,8 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.JWindow;
+import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.MenuEvent;
@@ -415,6 +417,18 @@ public class MainTheme extends JFrame implements Runnable {
     }
 
     public static void main(String[] args) {
+         JWindow window = new JWindow();
+        ImageIcon icon = new ImageIcon("src\\image\\load.gif");
+        window.getContentPane().add(
+                new JLabel("", icon, SwingConstants.CENTER));
+        window.setBounds(500, 150, 400,300);
+        window.setVisible(true);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        window.setVisible(false);
         MainTheme view = new MainTheme();
 
     }
