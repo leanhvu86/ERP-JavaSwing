@@ -1,6 +1,7 @@
 package View;
 
 import Controller.DaoTaoMgr;
+import Controller.ThongKeMgr;
 import entities.LoggedRole;
 import entities.NhanVien;
 import entities.PhongBan;
@@ -47,10 +48,10 @@ public final class ThongKe extends JInternalFrame {
     private JButton btnTimKiem, btnThem, btnSua, btnXoa, btnTuNgay, btnDenNgay;
     JDialog d;
     private JScrollPane textArea;
-    private final DaoTaoMgr daoTaoMgr = new DaoTaoMgr();
+    private final ThongKeMgr thongKeMgr = new ThongKeMgr();
     final DefaultComboBoxModel Name = new DefaultComboBoxModel();
     String danhsach = "";
-    MyTableModel model = new MyTableModel();
+    DefaultTableModel model = new DefaultTableModel();
 
     /**
      * Launch the application.
@@ -82,127 +83,123 @@ public final class ThongKe extends JInternalFrame {
         JLabel title = new JLabel("THỐNG KÊ NHÂN VIÊN");
         title.setFont(new Font("Tahoma", Font.BOLD, 16));
         title.setForeground(Color.DARK_GRAY);
-        title.setBounds(450, 0, 250, 40);
+        title.setBounds(650, 0, 250, 40);
         contentPane.add(title);
 
-        JLabel maLop = new JLabel("MÃ LỚP");
-        maLop.setBounds(50, 35, 150, 25);
-        contentPane.add(maLop);
+        JLabel gioiTinh = new JLabel("GIỚI TÍNH");
+        gioiTinh.setBounds(350, 85, 150, 25);
+        contentPane.add(gioiTinh);
 
-        txtMalop = new JTextField();
-        txtMalop.setBounds(200, 35, 250, 25);
-        contentPane.add(txtMalop);
+        final DefaultComboBoxModel GTinh = new DefaultComboBoxModel();
 
-        JLabel tenLop = new JLabel("TẾN LỚP");
-        tenLop.setBounds(50, 85, 150, 25);
-        contentPane.add(tenLop);
+        GTinh.addElement("------------------ Không xác định -----------------");
+        GTinh.addElement("         Nam        ");
+        GTinh.addElement("        Nữ        ");
+        GTinh.addElement("        Giới tính khác        ");
+        final JComboBox Combo = new JComboBox(GTinh);
+        Combo.setBounds(450, 85, 350, 25);
+        Combo.setSelectedIndex(0);
+        Combo.setBackground(Color.white);
+        JScrollPane ListScrollPane = new JScrollPane(Combo);
+        contentPane.add(Combo);
 
-        txtTenLop = new JTextField();
-        txtTenLop.setBounds(200, 85, 550, 25);
-        contentPane.add(txtTenLop);
+        JLabel doTuoi = new JLabel("ĐỘ TUỔI");
+        doTuoi.setBounds(350, 135, 150, 25);
+        contentPane.add(doTuoi);
 
-        JLabel phongBan = new JLabel("MÃ PHÒNG BAN");
-        phongBan.setBounds(50, 135, 150, 25);
-        contentPane.add(phongBan);
-   
-      
+        final DefaultComboBoxModel Tuoi = new DefaultComboBoxModel();
 
-        JLabel thoiGian = new JLabel("THỜI GIAN");
-        thoiGian.setBounds(50, 185, 150, 25);
-        contentPane.add(thoiGian);
+        Tuoi.addElement("------------------ Không xác định -----------------");
+        Tuoi.addElement("Từ 18 đến 40 tuổi");
+        Tuoi.addElement("Từ 40 đến 55 tuổi");
+        Tuoi.addElement("Đã về hưu");
+        final JComboBox Combo1 = new JComboBox(Tuoi);
+        Combo1.setBounds(450, 135, 350, 25);
+        Combo1.setSelectedIndex(0);
+        Combo1.setBackground(Color.white);
+        JScrollPane ListScrollPane1 = new JScrollPane(Combo1);
+        contentPane.add(Combo1);
 
-        JLabel tuNgay = new JLabel("TỪ NGÀY");
-        tuNgay.setBounds(200, 185, 150, 25);
-        contentPane.add(tuNgay);
+        JLabel hocVan = new JLabel("HỌC VẤN");
+        hocVan.setBounds(350, 185, 150, 25);
+        contentPane.add(hocVan);
 
-        txtTuNgay = new JTextField();
-        txtTuNgay.setBounds(280, 185, 150, 25);
-        contentPane.add(txtTuNgay);
+        final DefaultComboBoxModel hocvan = new DefaultComboBoxModel();
 
-        btnTuNgay = new JButton(new ImageIcon("src\\image\\datetimepicker.png"));
-        btnTuNgay.setForeground(Color.BLUE);
-        btnTuNgay.setBounds(430, 185, 25, 25);
-        contentPane.add(btnTuNgay);
-        btnTuNgay.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                DatePicker dp = new DatePicker();
-                Point bP = btnTuNgay.getLocationOnScreen();
-                dp.d.setLocation(bP.x, bP.y + btnTuNgay.getHeight());
-                dp.d.setVisible(true);
-                txtTuNgay.setText(dp.setPickedDate());
+        hocvan.addElement("------------------ Không xác định -----------------");
+        hocvan.addElement("Cao đẳng");
+        hocvan.addElement("Đại học");
+        hocvan.addElement("Thạc sỹ");
+        hocvan.addElement("Tiến sĩ");
+        final JComboBox Combo2 = new JComboBox(hocvan);
+        Combo2.setBounds(450, 185, 350, 25);
+        Combo2.setSelectedIndex(0);
+        Combo2.setBackground(Color.white);
+        JScrollPane ListScrollPane2 = new JScrollPane(Combo2);
+        contentPane.add(Combo2);
 
-            }
-        });
+        JLabel chucVu = new JLabel("CHỨC VỤ");
+        chucVu.setBounds(350, 235, 150, 25);
+        contentPane.add(chucVu);
 
-        JLabel denNgay = new JLabel("ĐẾN NGÀY");
-        denNgay.setBounds(480, 185, 150, 25);
-        contentPane.add(denNgay);
+        final DefaultComboBoxModel chucvu = new DefaultComboBoxModel();
 
-        txtDenNgay = new JTextField();
-        txtDenNgay.setBounds(560, 185, 150, 25);
-        contentPane.add(txtDenNgay);
+        chucvu.addElement("------------------ Không xác định -----------------");
+        chucvu.addElement("Giám đốc");
+        chucvu.addElement("Trưởng phòng");
+        chucvu.addElement("Nhân viên");
 
-        btnDenNgay = new JButton(new ImageIcon("src\\image\\datetimepicker.png"));
-        btnDenNgay.setForeground(Color.BLUE);
-        btnDenNgay.setBounds(710, 185, 25, 25);
-        contentPane.add(btnDenNgay);
-        btnDenNgay.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent ae) {
-                DatePicker dp = new DatePicker();
-                Point bP = btnDenNgay.getLocationOnScreen();
-                dp.d.setLocation(bP.x, bP.y + btnDenNgay.getHeight());
-                dp.d.setVisible(true);
-                txtDenNgay.setText(dp.setPickedDate());
-
-            }
-        });
-
-        JLabel danhSach = new JLabel("DANH SÁCH");
-        danhSach.setBounds(50, 235, 150, 25);
-        contentPane.add(danhSach);
-
-        areaDanhSach = new JTextArea();
-        areaDanhSach.setBounds(200, 235, 550, 100);
-        contentPane.add(areaDanhSach);
-        textArea = new JScrollPane(areaDanhSach);
-        textArea.setBounds(200, 235, 550, 100);
-        textArea.setVisible(true);
-        contentPane.add(textArea);
-        areaDanhSach.setEditable(false);
-        areaDanhSach.setLineWrap(true);
-
-        JLabel ghichu = new JLabel("GHI CHÚ");
-        ghichu.setBounds(50, 355, 150, 25);
-        contentPane.add(ghichu);
-
-        txtGhiChu = new JTextField();
-        txtGhiChu.setBounds(200, 355, 550, 25);
-        contentPane.add(txtGhiChu);
+        final JComboBox Combo3 = new JComboBox(chucvu);
+        Combo3.setBounds(450, 235, 350, 25);
+        Combo3.setSelectedIndex(0);
+        Combo3.setBackground(Color.white);
+        JScrollPane ListScrollPane3 = new JScrollPane(Combo3);
+        contentPane.add(Combo3);
 
         ImageIcon icon = new ImageIcon("src\\image\\search.png");
         btnTimKiem = new JButton("TÌM KIẾM", icon);
         btnTimKiem.setForeground(Color.BLUE);
-        btnTimKiem.setBounds(100, 405, 150, 25);
+        btnTimKiem.setBounds(1000, 125, 150, 25);
         contentPane.add(btnTimKiem);
 
-        ImageIcon icon1 = new ImageIcon("src\\image\\save.png");
-        btnThem = new JButton("THÊM", icon1);
+        ImageIcon icon1 = new ImageIcon("src\\image\\excel.png");
+        btnThem = new JButton("IN RA EXCEL", icon1);
         btnThem.setForeground(Color.BLUE);
-        btnThem.setBounds(300, 405, 150, 25);
+        btnThem.setBounds(1000, 205, 150, 25);
+        contentPane.add(btnThem);
+        JScrollPane scrollPane = new JScrollPane();
+        scrollPane.setBounds(20, 300, 1300, 350);
+        contentPane.add(scrollPane);
+        listNhanVien = new JTable();
+        listNhanVien.setModel(new DefaultTableModel(
+                new Object[][]{},
+                new String[]{
+                    "MÃ NHÂN VIÊN", "TÊN NHÂN VIÊN", "GIỚI TÍNH", "ĐỘ TUỔI", "HỌC VẤN", "CHỨC VỤ"
+                }
+        ));
+        listNhanVien.setBounds(20, 300, 1300, 350);
+        scrollPane.setViewportView(listNhanVien);
 
-        ImageIcon icon2 = new ImageIcon("src\\image\\edit.png");
-        btnSua = new JButton("SỬA", icon2);
-        btnSua.setForeground(Color.BLUE);
-        btnSua.setBounds(500, 405, 150, 25);
+    }
 
-        ImageIcon icon3 = new ImageIcon("src\\image\\delete.png");
-        btnXoa = new JButton("XÓA", icon3);
-        btnXoa.setForeground(Color.BLUE);
-        btnXoa.setBounds(700, 405, 150, 25);
+    private void initTable(String gioiTinh, String doTuoi, String hocVan, String chucVu) {
+        model.fireTableDataChanged();
+        model.setRowCount(0);
 
-     
+        try {
 
+            List<NhanVien> list = thongKeMgr.getListByFilter(gioiTinh, doTuoi, hocVan, chucVu);
+            if (!list.isEmpty()) {
+                list.forEach((E) -> {
+                    model.addRow(new Object[]{E.getMaNhanVien(), E.getTenNhanVien(), true});
+                    danhsach += E.getMaNhanVien() + ";";
+
+                });
+            }
+
+            listNhanVien.setModel(model);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
