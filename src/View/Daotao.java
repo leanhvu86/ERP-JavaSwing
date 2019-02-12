@@ -300,40 +300,36 @@ public final class Daotao extends JInternalFrame {
                     String maNhanVien = listNhanVien.getValueAt(index, 0).toString();
                     boolean daotao = (boolean) listNhanVien.getValueAt(index, 2);
                     System.out.println(maNhanVien + "dao tao" + daotao);
+                    areaDanhSach.setText(getDanhSach(maNhanVien, daotao));
 
-                    if (false != daotao) {
-                        areaDanhSach.setText(getDanhSach(maNhanVien));
-                    } else {
-                        areaDanhSach.setText(xoaNVDanhSach(maNhanVien));
-                    }
                 }
             }
         });
 
     }
 
-    public String getDanhSach(String maNhanVien) {
-        if (!danhsach.contains(maNhanVien)) {
-            danhsach += maNhanVien + ";";
+    public String getDanhSach(String maNhanVien, boolean daotao) {
+        if (daotao == true) {
+            if (!danhsach.contains(maNhanVien)) {
+                danhsach += maNhanVien + ";";
+            }
+            System.out.println("get danh sach" + danhsach);
+        } else {
+            int index = danhsach.indexOf(maNhanVien);
+            System.out.println(index);
+            if (index > 0) {
+                String b = danhsach;
+                danhsach = danhsach.substring(0, index);
+                b = b.substring(index + 6);
+                danhsach = danhsach + b;
+                System.out.println(danhsach + "danh sach");
+            } else if (index == 0) {
+                danhsach = danhsach.substring(6);
+            }
+
+            System.out.println("xoanv" + danhsach);
         }
-        System.out.println("get danh sach" + danhsach);
         return danhsach;
     }
 
-    public String xoaNVDanhSach(String maNhanVien) {
-        int index = danhsach.indexOf(maNhanVien);
-        System.out.println(index);
-        if (index > 0) {
-            String b = danhsach;
-            danhsach = danhsach.substring(0, index);
-            b = b.substring(index + 6);
-            danhsach = danhsach + b;
-            System.out.println(danhsach + "danh sach");
-        } else if (index == 0) {
-            danhsach = danhsach.substring(6);
-        }
-
-        System.out.println("xoanv" + danhsach);
-        return danhsach;
-    }
 }
