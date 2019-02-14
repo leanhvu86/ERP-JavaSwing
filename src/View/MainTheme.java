@@ -1,6 +1,7 @@
 package View;
 
 import entities.LoggedRole;
+import entities.SqlUI;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -47,7 +48,7 @@ public class MainTheme extends JFrame implements Runnable {
     NhanSu nhanSu;
     ThongKe thongKe;
     DanhGia danhGia;
-
+    JMenuBar jMenuBar;
     private JLabel lblTime;
     boolean DTao = false, TDung = false, DGia = false, NSu = false, TKe = false;
 
@@ -68,7 +69,7 @@ public class MainTheme extends JFrame implements Runnable {
 
     private void initView() {
 
-        JMenuBar jMenuBar = new JMenuBar();
+        jMenuBar = new JMenuBar();
         jMenuBar.setSize(50, 450);
         JDesktopPane jDesktopPane = new JDesktopPane() {
             ImageIcon icon = new ImageIcon("src\\image\\nen.jpg");
@@ -343,7 +344,6 @@ public class MainTheme extends JFrame implements Runnable {
 
         btn4 = new JButton(new ImageIcon("src\\image\\iconfinder_1-08_511566.png"));
         btn4.setBounds(224, 1, 70, 70);
-        btn4.setEnabled(false);
         btn4.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -364,7 +364,10 @@ public class MainTheme extends JFrame implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // TODO Auto-generated method stub
-
+                if(SqlUI.getUserName()==null||SqlUI.getUserName().equals("")){
+                    JOptionPane.showMessageDialog(btn1, "Vui lòng kết nối database trước khi đăng nhập");
+                    return;
+                }
                 Login login = new Login();
                 login.setSize(550, 350);
                 login.setLocation(200, 100);
@@ -389,7 +392,6 @@ public class MainTheme extends JFrame implements Runnable {
                 } else {
                     return;
                 }
-
             }
         });
 
@@ -407,7 +409,7 @@ public class MainTheme extends JFrame implements Runnable {
         btn1.setEnabled(true);
         btn2.setEnabled(true);
         btn3.setEnabled(true);
-        btn4.setEnabled(true);
+        btn4.setEnabled(false);
         btn5.setEnabled(false);
         menuTChu.setEnabled(true);
         menuNSu.setEnabled(true);
@@ -458,5 +460,4 @@ public class MainTheme extends JFrame implements Runnable {
             }
         }
     }
-
 }

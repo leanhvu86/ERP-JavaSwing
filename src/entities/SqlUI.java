@@ -10,30 +10,25 @@ package entities;
  * @author Win
  */
 public class SqlUI {
-    private String userName,password;
+    static String userName,password;
 
     public SqlUI() {
     }
 
-    public SqlUI(String userName, String password) {
-        this.userName = userName;
-        this.password = password;
-    }
-
-    public String getUserName() {
+    public static String getUserName() {
         return userName;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public static void setUserName(String userName) {
+        SqlUI.userName = userName;
     }
 
-    public String getPassword() {
+    public static String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public static void setPassword(String password) {
+        SqlUI.password = password;
     }
     
 }

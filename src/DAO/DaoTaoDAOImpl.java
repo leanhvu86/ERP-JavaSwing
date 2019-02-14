@@ -9,6 +9,7 @@ import entities.DaoTao;
 import entities.LoggedRole;
 import entities.NhanVien;
 import entities.PhongBan;
+import entities.SqlUI;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -23,14 +24,19 @@ import java.util.List;
  */
 public class DaoTaoDAOImpl implements DaoTaoDAO {
 
+    SqlUI sqlUI = new SqlUI();
+    private String username = sqlUI.getUserName();
+    private String password = sqlUI.getPassword();
+
     @Override
     public List<PhongBan> getListPhongBan() {
         List<PhongBan> list = new ArrayList<>();
+        System.out.println(username+"fdsfd"+password);
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             String url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
 
-            Connection con = DriverManager.getConnection(url, "sa", "123456789");
+            Connection con = DriverManager.getConnection(url, username, password);
             String sql = "select * from PhongBan where 1=1";
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -62,7 +68,7 @@ public class DaoTaoDAOImpl implements DaoTaoDAO {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             String url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
 
-            Connection con = DriverManager.getConnection(url, "sa", "123456789");
+            Connection con = DriverManager.getConnection(url, username, password);
             String sql = "select * from NhanVien where 1=1 and MaPhongBan=?";
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, maPhongBan);
@@ -110,7 +116,7 @@ public class DaoTaoDAOImpl implements DaoTaoDAO {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             String url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
-            Connection con = DriverManager.getConnection(url, "sa", "123456789");
+            Connection con = DriverManager.getConnection(url, username, password);
             String sql = "insert into DaoTao values(?,?,?,?,?,?,?)";
             PreparedStatement st = con.prepareStatement(sql);
             st.setString(1, daoTao.getMaLop());
@@ -140,7 +146,7 @@ public class DaoTaoDAOImpl implements DaoTaoDAO {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             String url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
 
-            Connection con = DriverManager.getConnection(url, "sa", "123456789");
+            Connection con = DriverManager.getConnection(url, username, password);
             String sql = "select * from DaoTao where 1=1 and MaLop=?";
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, maLop);
@@ -166,7 +172,7 @@ public class DaoTaoDAOImpl implements DaoTaoDAO {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             String url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
 
-            Connection con = DriverManager.getConnection(url, "sa", "123456789");
+            Connection con = DriverManager.getConnection(url, username, password);
             String sql = "select * from DaoTao where 1=1";
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
