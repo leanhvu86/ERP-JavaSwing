@@ -5,6 +5,7 @@
  */
 package DAO;
 
+import entities.DaoTao;
 import entities.LoggedRole;
 import entities.NhanVien;
 import entities.PhongBan;
@@ -65,7 +66,7 @@ public class DaoTaoDAOImpl implements DaoTaoDAO {
             String sql = "select * from NhanVien where 1=1 and MaPhongBan=?";
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, maPhongBan);
-            System.out.println(sql+"            select nè");
+            System.out.println(sql + "            select nè");
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 String maNV = rs.getString("MaNhanVien");
@@ -89,6 +90,96 @@ public class DaoTaoDAOImpl implements DaoTaoDAO {
                 String maNhomQuyen = rs.getString("MaNhomQuyen");
                 String passWord = rs.getString("Password");
                 NhanVien e = new NhanVien(maNV, tenNV, ngaySinh, maPhongBan1, GioiTinh, DienThoai, DiaChi, Email, theCanCuoc, ChuyenNganh, cVHoanThanh, kNLamViec, yThucLamViec, thamGiaHD, anhCaNhan, cVBanThan, ghiChu, maNhomQuyen, passWord);
+                list.add(e);
+            }
+            if (list.size() != 0) {
+                return list;
+            }
+            ps.close();
+            rs.close();
+            con.close();
+
+        } catch (ClassNotFoundException | SQLException e1) {
+            e1.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public boolean saveDaoTao(DaoTao daoTao) {
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            String url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
+            Connection con = DriverManager.getConnection(url, "sa", "123456789");
+            String sql = "insert into DaoTao values(?,?,?,?,?,?,?)";
+            PreparedStatement st = con.prepareStatement(sql);
+            st.setString(1, daoTao.getMaLop());
+            st.setString(2, daoTao.getTenLop());
+            st.setString(3, daoTao.getDanhSach());
+            st.setString(4, daoTao.getMaPhongBan());
+            st.setString(5, daoTao.getTuNgay());
+            st.setString(6, daoTao.getDenNgay());
+            st.setString(7, daoTao.getGhiChu());
+            st.executeUpdate();
+            if (st.getUpdateCount() > 0) {
+                return true;
+            }
+            st.close();
+            con.close();
+
+        } catch (Exception e) {
+            System.out.println(e);
+            return false;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean getDaoTaoById(String maLop) {
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            String url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
+
+            Connection con = DriverManager.getConnection(url, "sa", "123456789");
+            String sql = "select * from DaoTao where 1=1 and MaLop=?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, maLop);
+            ResultSet rs = ps.executeQuery();
+            boolean isExist = rs.next();
+            if (isExist == true) {
+                return true;
+            }
+            ps.close();
+            rs.close();
+            con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    @Override
+    public List<DaoTao> getListDaoTao() {
+        List<DaoTao> list = new ArrayList<>();
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            String url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
+
+            Connection con = DriverManager.getConnection(url, "sa", "123456789");
+            String sql = "select * from DaoTao where 1=1";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String MaLop = rs.getString("MaLop");
+                String TenLop = rs.getString("TenLop");
+                String danhSach = rs.getString("DanhSach");
+                String MaPhongBan = rs.getString("MaPhongBan");
+                String tuNgay = rs.getString("TuNgay");
+                String denNgay = rs.getString("DenNgay");
+                String ghiChu = rs.getString("GhiChu");
+                DaoTao e = new DaoTao(0, MaLop, TenLop, danhSach, MaPhongBan, tuNgay, denNgay, ghiChu);
                 list.add(e);
             }
             if (list.size() != 0) {

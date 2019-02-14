@@ -6,6 +6,7 @@
 package Controller;
 
 import DAO.DaoTaoDAOImpl;
+import entities.DaoTao;
 import entities.NhanVien;
 import entities.PhongBan;
 import java.util.List;
@@ -28,6 +29,16 @@ public class DaoTaoMgr {
 
         return null;
     }
+      public List<DaoTao> getListDaoTao() {
+        try {
+
+            return daoTaoDAOImpl.getListDaoTao();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
     public List<NhanVien> getListNhanVien(String maPhongBan) {
         try {
@@ -38,5 +49,23 @@ public class DaoTaoMgr {
         }
 
         return null;
+    }
+
+    public boolean saveDaoTao(DaoTao daoTao) {
+        try {
+            return daoTaoDAOImpl.saveDaoTao(daoTao);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean getDaoTaoById(String maLop) {
+        try {
+            return daoTaoDAOImpl.getDaoTaoById(maLop);
+        } catch (Exception e) {
+        }
+        return false;
     }
 }

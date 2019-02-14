@@ -344,6 +344,18 @@ public class MainTheme extends JFrame implements Runnable {
         btn4 = new JButton(new ImageIcon("src\\image\\iconfinder_1-08_511566.png"));
         btn4.setBounds(224, 1, 70, 70);
         btn4.setEnabled(false);
+        btn4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+
+                sqlUI sqlUI = new sqlUI();
+                sqlUI.setSize(550, 350);
+                sqlUI.setLocation(200, 100);
+
+                sqlUI.setVisible(true);
+                jDesktopPane.add(sqlUI);
+            }
+        });
 
         btn5 = new JButton(new ImageIcon("src\\image\\iconfinder_Login_73221.png"));
         btn5.setBounds(295, 1, 70, 70);
@@ -358,12 +370,6 @@ public class MainTheme extends JFrame implements Runnable {
                 login.setLocation(200, 100);
 
                 login.setVisible(true);
-                try {
-                    jDesktopPane.remove(daotao);
-
-                } catch (Exception e1) {
-                }
-
                 jDesktopPane.add(login);
 
             }
@@ -417,11 +423,11 @@ public class MainTheme extends JFrame implements Runnable {
     }
 
     public static void main(String[] args) {
-         JWindow window = new JWindow();
+        JWindow window = new JWindow();
         ImageIcon icon = new ImageIcon("src\\image\\load.gif");
         window.getContentPane().add(
                 new JLabel("", icon, SwingConstants.CENTER));
-        window.setBounds(500, 150, 400,300);
+        window.setBounds(500, 150, 400, 300);
         window.setVisible(true);
         try {
             Thread.sleep(5000);

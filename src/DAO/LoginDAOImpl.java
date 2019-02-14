@@ -48,4 +48,22 @@ public class LoginDAOImpl implements LoginDAO {
         return false;
     }
 
+    @Override
+    public boolean checkDataBase(String username, String password) {
+        
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            String url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
+
+            Connection con = DriverManager.getConnection(url, username, password);
+        if(!con.getMetaData().getDatabaseProductName().equals(""))return true;
+            System.out.println(con.getMetaData().getDatabaseProductName());
+            con.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+        return false;
+    }
+
 }

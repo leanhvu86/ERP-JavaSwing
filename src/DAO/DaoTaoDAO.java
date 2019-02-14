@@ -5,6 +5,7 @@
  */
 package DAO;
 
+import entities.DaoTao;
 import entities.NhanVien;
 import entities.PhongBan;
 import java.util.List;
@@ -16,4 +17,7 @@ import java.util.List;
 public interface DaoTaoDAO {
     public List<PhongBan> getListPhongBan();
     public List<NhanVien> getListNhanVien(String maPhongBan);
+    public boolean saveDaoTao(DaoTao daoTao);
+    public boolean getDaoTaoById(String maLop);
+    public List<DaoTao> getListDaoTao();
 }
