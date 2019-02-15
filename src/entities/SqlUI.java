@@ -5,11 +5,13 @@
  */
 package entities;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Win
  */
-public class SqlUI {
+public class SqlUI implements Serializable{
     static String userName,password;
 
     public SqlUI() {

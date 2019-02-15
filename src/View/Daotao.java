@@ -343,7 +343,7 @@ public final class Daotao extends JInternalFrame {
                     txtDenNgay.setText(listLopDT.getValueAt(index, 5).toString());
                     areaDanhSach.setText(listLopDT.getValueAt(index, 6).toString());
                     txtGhiChu.setText(listLopDT.getValueAt(index, 7).toString());
-                    
+                    cmbPhongBan.setSelectedItem(listLopDT.getValueAt(index, 3));
                 }
             }
         });

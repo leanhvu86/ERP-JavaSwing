@@ -12,7 +12,7 @@ import entities.SqlUI;
 
 public class LoginDAOImpl implements LoginDAO {
 
-    SqlUI sqlUI = new SqlUI();
+    SqlUI sqlUI;
     private String username = sqlUI.getUserName();
     private String password = sqlUI.getPassword();
 
@@ -54,19 +54,22 @@ public class LoginDAOImpl implements LoginDAO {
     }
 
     @Override
-    public boolean checkDataBase(String username, String password) {
+    public boolean checkDataBase(String user, String pass) {
 
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             String url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
 
-            Connection con = DriverManager.getConnection(url, username, password);
-            if (!con.getMetaData().getDatabaseProductName().equals("")) {
-                return true;
+            try  {
+                Connection con = DriverManager.getConnection(url, user, pass);
+                if (!con.getMetaData().getDatabaseProductName().equals("")) {
+                    return true;
+                }
+                System.out.println(con.getMetaData().getDatabaseProductName());
+            }catch(SQLException e){
+                e.printStackTrace();
             }
-            System.out.println(con.getMetaData().getDatabaseProductName());
-            con.close();
-        } catch (Exception e) {
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
             return false;
         }

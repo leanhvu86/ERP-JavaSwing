@@ -52,19 +52,19 @@ public class sqlUI extends JInternalFrame {
         JLabel lbl = new JLabel("Mời bạn nhập thông tin tài khoản đăng nhập SQL SERVER");
         lbl.setBounds(80, 25, 350, 30);
         JLabel lblUser = new JLabel("USERNAME:");
-        lblUser.setBounds(50, 80, 100, 30);
+        lblUser.setBounds(150, 80, 100, 30);
 
         JLabel lblPass = new JLabel("PASSWORD");
-        lblPass.setBounds(50, 140, 100, 30);
+        lblPass.setBounds(150, 140, 100, 30);
         jPanel.add(lbl);
         jPanel.add(lblUser);
         jPanel.add(lblPass);
 
         txtUser = new JTextField();
-        txtUser.setBounds(170, 80, 215, 30);
+        txtUser.setBounds(270, 80, 215, 30);
 
         txtPass = new JPasswordField();
-        txtPass.setBounds(170, 140, 215, 30);
+        txtPass.setBounds(270, 140, 215, 30);
         txtPass.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent ke) {
@@ -162,7 +162,7 @@ public class sqlUI extends JInternalFrame {
         jPanel.add(btnLogin);
 
         JLabel btnImage = new JLabel(
-                new ImageIcon("C:\\Users\\dell\\Downloads\\ICon Androi\\iconfinder_f-shield_256_282458.png"));
+                new ImageIcon("src\\image\\iconfinder_f-shield_256_282458.png"));
 
         btnImage.setBounds(
                 10, 50, 140, 200);

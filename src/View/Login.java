@@ -135,7 +135,7 @@ public class Login extends JInternalFrame {
         jPanel.add(btnLogin);
 
         JLabel btnImage = new JLabel(
-                new ImageIcon("C:\\Users\\dell\\Downloads\\ICon Androi\\iconfinder_f-shield_256_282458.png"));
+                new ImageIcon("src\\image\\iconfinder_f-shield_256_282458.png"));
         btnImage.setBounds(10, 50, 140, 200);
 
         jPanel.add(btnImage);
