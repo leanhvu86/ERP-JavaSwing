@@ -50,7 +50,7 @@ public final class Daotao extends JInternalFrame {
     private JComboBox cmbPhongBan;
     private JTextArea areaDanhSach;
     private JTable listNhanVien, listLopDT;
-    private JButton btnTimKiem, btnThem, btnSua, btnXoa, btnTuNgay, btnDenNgay;
+    private JButton btnTimKiem, btnThem, btnSua, btnXoa, btnTuNgay, btnDenNgay, btnLamMoi;
     JDialog d;
     private JScrollPane textArea;
     private final DaoTaoMgr daoTaoMgr = new DaoTaoMgr();
@@ -228,14 +228,57 @@ public final class Daotao extends JInternalFrame {
         ImageIcon icon = new ImageIcon("src\\image\\search.png");
         btnTimKiem = new JButton("TÌM KIẾM", icon);
         btnTimKiem.setForeground(Color.BLUE);
-        btnTimKiem.setBounds(100, 405, 150, 25);
+        btnTimKiem.setBounds(80, 405, 120, 25);
         contentPane.add(btnTimKiem);
 
+        btnLamMoi = new JButton("LÀM MỚI");
+        btnLamMoi.setForeground(Color.BLUE);
+        btnLamMoi.setBounds(220, 405, 120, 25);
+        btnLamMoi.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                LamMoi();
+            }
+        });
+        contentPane.add(btnLamMoi);
         ImageIcon icon1 = new ImageIcon("src\\image\\save.png");
         btnThem = new JButton("THÊM", icon1);
         btnThem.setForeground(Color.BLUE);
-        btnThem.setBounds(300, 405, 150, 25);
+        btnThem.setBounds(360, 405, 120, 25);
         btnThem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                if (checkDaoTao()) {
+                    if (daoTaoMgr.getDaoTaoById(txtMalop.getText()) == true) {
+                        errMsg.setText("Không được trùng mã lớp");
+                        txtMalop.requestFocus();
+                        return;
+                    }
+                    errMsg.setText("");
+                    DaoTao daoTao = new DaoTao();
+                    daoTao.setMaLop(txtMalop.getText());
+                    daoTao.setTenLop(txtTenLop.getText());
+                    daoTao.setDanhSach(areaDanhSach.getText());
+                    daoTao.setMaPhongBan(cmbPhongBan.getSelectedItem().toString());
+                    daoTao.setTuNgay(txtTuNgay.getText());
+                    daoTao.setDenNgay(txtDenNgay.getText());
+                    daoTao.setGhiChu(txtGhiChu.getText());
+                    if (daoTaoMgr.saveDaoTao(daoTao) == true) {
+                        JOptionPane.showMessageDialog(d, "Thêm mới thành công");
+                        LamMoi();
+                    } else {
+                        JOptionPane.showMessageDialog(d, "Thêm mới thất bại");
+                    }
+                    initTableDaoTao();
+                }
+            }
+        });
+
+        ImageIcon icon2 = new ImageIcon("src\\image\\edit.png");
+        btnSua = new JButton("SỬA", icon2);
+        btnSua.setForeground(Color.BLUE);
+        btnSua.setBounds(500, 405, 120, 25);
+        btnSua.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 if (checkDaoTao()) {
@@ -248,25 +291,38 @@ public final class Daotao extends JInternalFrame {
                     daoTao.setDenNgay(txtDenNgay.getText());
                     daoTao.setGhiChu(txtGhiChu.getText());
                     if (daoTaoMgr.saveDaoTao(daoTao) == true) {
-                        JOptionPane.showMessageDialog(d, "Thêm mới thành công");
+                        JOptionPane.showMessageDialog(d, "Cập nhật thành công");
                     } else {
-                        JOptionPane.showMessageDialog(d, "Thêm mới thất bại");
+                        JOptionPane.showMessageDialog(d, "Cập nhật thất bại");
                     }
                     initTableDaoTao();
                 }
             }
         });
 
-        ImageIcon icon2 = new ImageIcon("src\\image\\edit.png");
-        btnSua = new JButton("SỬA", icon2);
-        btnSua.setForeground(Color.BLUE);
-        btnSua.setBounds(500, 405, 150, 25);
-
         ImageIcon icon3 = new ImageIcon("src\\image\\delete.png");
         btnXoa = new JButton("XÓA", icon3);
         btnXoa.setForeground(Color.BLUE);
-        btnXoa.setBounds(700, 405, 150, 25);
+        btnXoa.setBounds(640, 405, 120, 25);
+        btnXoa.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                int result = JOptionPane.showConfirmDialog(null,
+                        "Bạn muốn xóa dữ liệu lớp đào tạo?",
+                        "Confirm",
+                        JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.YES_OPTION) {
 
+                    if (daoTaoMgr.deleteDaoTaoByID(txtMalop.getText()) == true) {
+                        JOptionPane.showMessageDialog(d, "Xóa thành công");
+                        LamMoi();
+                    } else {
+                        JOptionPane.showMessageDialog(d, "Xóa thất bại");
+                    }
+                }
+                initTableDaoTao();
+            }
+        });
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setBounds(0, 450, 1350, 160);
         contentPane.add(scrollPane);
@@ -337,6 +393,7 @@ public final class Daotao extends JInternalFrame {
             public void valueChanged(ListSelectionEvent lse) {
                 int index = listLopDT.getSelectedRow();
                 if (index >= 0) {
+                    txtMalop.setEditable(false);
                     txtMalop.setText(listLopDT.getValueAt(index, 1).toString());
                     txtTenLop.setText(listLopDT.getValueAt(index, 2).toString());
                     txtTuNgay.setText(listLopDT.getValueAt(index, 4).toString());
@@ -419,11 +476,6 @@ public final class Daotao extends JInternalFrame {
             return false;
         }
 
-        if (daoTaoMgr.getDaoTaoById(txtMalop.getText())==true) {
-            errMsg.setText("Không được trùng mã lớp");
-            txtMalop.requestFocus();
-            return false;
-        }
         if (txtTenLop.getText().equals("")) {
             errMsg.setText("Không để trống tên lớp");
             txtTenLop.requestFocus();
@@ -467,5 +519,16 @@ public final class Daotao extends JInternalFrame {
         }
         errMsg.setText("");
         return true;
+    }
+
+    public void LamMoi() {
+        txtMalop.setEditable(true);
+        txtMalop.setText("");
+        txtTenLop.setText("");
+        areaDanhSach.setText("");
+        txtTuNgay.setText("");
+        txtDenNgay.setText("");
+        txtGhiChu.setText("");
+        cmbPhongBan.setSelectedIndex(0);
     }
 }

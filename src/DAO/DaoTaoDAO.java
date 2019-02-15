@@ -20,4 +20,5 @@ public interface DaoTaoDAO {
     public boolean saveDaoTao(DaoTao daoTao);
     public boolean getDaoTaoById(String maLop);
     public List<DaoTao> getListDaoTao();
+    public boolean deleteDaoTaoByID(String maLop);
 }

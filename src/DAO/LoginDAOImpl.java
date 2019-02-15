@@ -23,7 +23,7 @@ public class LoginDAOImpl implements LoginDAO {
             String url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
 
             Connection con = DriverManager.getConnection(url,username, password);
-            String sql = "select maNhomquyen from nhanvien where MaNhanVien =? and password=?";
+            String sql = "select maNhomquyen from taikhoan where MaNhanVien =? and password=?";
             PreparedStatement ps = con.prepareStatement(sql);
 
             ps.setString(1, user);
