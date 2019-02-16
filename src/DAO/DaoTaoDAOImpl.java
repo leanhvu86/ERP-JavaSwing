@@ -59,7 +59,7 @@ public class DaoTaoDAOImpl implements DaoTaoDAO {
         } catch (ClassNotFoundException | SQLException e1) {
             e1.printStackTrace();
         }
-        return null;
+        return list;
     }
 
     @Override
@@ -69,30 +69,30 @@ public class DaoTaoDAOImpl implements DaoTaoDAO {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             String url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
 
-            Connection con = DriverManager.getConnection(url, username, password);
-            String sql = "select * from NhanVien where 1=1 and MaPhongBan=?";
-            PreparedStatement ps = con.prepareStatement(sql);
-            ps.setString(1, maPhongBan);
-            System.out.println(sql + "            select nè");
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                String maNV = rs.getString("MaNhanVien");
-                String tenNV = rs.getString("TenNhanVien");
-
-                NhanVien e = new NhanVien(maNV, tenNV);
-                list.add(e);
+            try (Connection con = DriverManager.getConnection(url, username, password)) {
+                String sql = "select * from NhanVien where 1=1 and MaPhongBan=?";
+                PreparedStatement ps = con.prepareStatement(sql);
+                ps.setString(1, maPhongBan);
+                System.out.println(sql + "            select nè");
+                ResultSet rs = ps.executeQuery();
+                while (rs.next()) {
+                    String maNV = rs.getString("MaNhanVien");
+                    String tenNV = rs.getString("HoTen");
+                    String anh=rs.getString("Anh");
+                    NhanVien e = new NhanVien(maNV, tenNV,anh);
+                    list.add(e);
+                }
+                if (list.size() != 0) {
+                    return list;
+                }
+                ps.close();
+                rs.close();
             }
-            if (list.size() != 0) {
-                return list;
-            }
-            ps.close();
-            rs.close();
-            con.close();
 
         } catch (ClassNotFoundException | SQLException e1) {
             e1.printStackTrace();
         }
-        return null;
+        return list;
     }
 
     @Override
@@ -128,7 +128,7 @@ public class DaoTaoDAOImpl implements DaoTaoDAO {
                 String url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
                 Connection con = DriverManager.getConnection(url, username, password);
                 String sql = "update DaoTao set TenLop=?,danhsach=?,maphongban=?,"
-                        + "tungay=?,denngay=?,ghichu=?  where Malop like ?";
+                        + "tungay=?,denngay=?,ghichu=?  where Malop = ?";
                 PreparedStatement st = con.prepareStatement(sql);
 
                 st.setString(1, daoTao.getTenLop());
@@ -212,7 +212,7 @@ public class DaoTaoDAOImpl implements DaoTaoDAO {
         } catch (ClassNotFoundException | SQLException e1) {
             e1.printStackTrace();
         }
-        return null;
+        return list;
     }
 
     @Override

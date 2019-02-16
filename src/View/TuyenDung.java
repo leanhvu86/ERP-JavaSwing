@@ -5,6 +5,7 @@
  */
 package View;
 
+import entities.SqlUI;
 import entities.Tuyendung;
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -44,7 +45,7 @@ import javax.swing.table.DefaultTableModel;
  * @author Administrator
  */
 public class TuyenDung extends JInternalFrame {
-    
+
     private JPanel panel1, panel2, panel3, panel4;
     private JLabel lbl_id, lbl_hoten, lbl_ngaysinh, lbl_gioitinh, lbl_noisinh, lbl_sdt, lbl_email, lbl_cmnd, lbl_trinhdo,
             lbl_totnghiep, lbl_vitri, lbl_chuyennganh, lbl_ngonngu, lbl_kinhnghiem, lbl_nam1, lbl_nam2, lbl_dot1, lbl_dot2, lbl_chuyennganh1;
@@ -62,11 +63,15 @@ public class TuyenDung extends JInternalFrame {
     int index = -1;
     private Connection con;
     String img = null;
+    SqlUI sqlUI = new SqlUI();
+    private String serverName = sqlUI.getServerName();
+    private String username = sqlUI.getUserName();
+    private String password = sqlUI.getPassword();
 
     public TuyenDung() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            con = DriverManager.getConnection("jdbc:sqlserver://localhost\\MRTHAI-V8H0O076\\SQLEXPRESS:1433;databaseName=Duanmau;user=sa;password=luong123");
+            con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager;user="+username+";password="+password+"");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -93,7 +98,7 @@ public class TuyenDung extends JInternalFrame {
     }
 
     public void upImage(String img) {
-        ImageIcon anh = new ImageIcon("src\\image\\" + img);
+        ImageIcon anh = new ImageIcon("src\\image\\CV\\" + img);
         Image image = anh.getImage();
         ImageIcon anh1 = new ImageIcon(image.getScaledInstance(btn_anh.getWidth(), btn_anh.getHeight(), image.SCALE_SMOOTH));
         btn_anh.setIcon(anh1);
@@ -197,10 +202,10 @@ public class TuyenDung extends JInternalFrame {
         try {
             model_TD.setRowCount(0);
             Statement st = con.createStatement();
-            ResultSet rs = st.executeQuery("Select * from Tuyendung1");
+            ResultSet rs = st.executeQuery("Select * from Tuyendung");
             while (rs.next()) {
                 Vector row = new Vector();
-                row.add(rs.getString("MaNhanVien"));
+                row.add(rs.getString("MaUngVien"));
                 row.add(rs.getString("hoten"));
                 row.add(rs.getString("ngaysinh"));
                 row.add(rs.getString("gioitinh"));
@@ -227,12 +232,12 @@ public class TuyenDung extends JInternalFrame {
 
     public ArrayList<Tuyendung> getListTD() {
         try {
-            String sql = "Select * from Tuyendung1";
+            String sql = "Select * from Tuyendung";
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 Tuyendung td = new Tuyendung();
-                td.setId(rs.getString("MaNhanVien"));
+                td.setId(rs.getString("MaUngVien"));
                 td.setHoten(rs.getString("hoten"));
                 td.setNgaysinh(rs.getString("ngaysinh"));
                 td.setGioitinh(rs.getString("gioitinh"));
@@ -279,7 +284,7 @@ public class TuyenDung extends JInternalFrame {
     private boolean delete() {
         try {
             index = tbl_tuyendung.getSelectedRow();
-            String sql = "delete from Tuyendung1 where MaNhanVien = ?";
+            String sql = "delete from Tuyendung where MaUngVien = ?";
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, tbl_tuyendung.getValueAt(index, 0).toString());
             ps.execute();
@@ -296,8 +301,8 @@ public class TuyenDung extends JInternalFrame {
             try {
                 Tuyendung td = new Tuyendung();
                 Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-                con = DriverManager.getConnection("jdbc:sqlserver://localhost\\MRTHAI-V8H0O076\\SQLEXPRESS:1433;databaseName=Duanmau;user=sa;password=luong123");
-                String sql = "insert into Tuyendung1 values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager;user="+username+";password="+password+"");
+                String sql = "insert into Tuyendung values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
                 PreparedStatement st = con.prepareStatement(sql);
                 st.setString(1, txt_id.getText());
                 st.setString(2, txt_hoten.getText());
@@ -380,10 +385,10 @@ public class TuyenDung extends JInternalFrame {
                 try {
                     Tuyendung td = new Tuyendung();
                     Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-                    con = DriverManager.getConnection("jdbc:sqlserver://localhost\\MRTHAI-V8H0O076\\SQLEXPRESS:1433;databaseName=Duanmau;user=sa;password=luong123");
-                    String sql = "update Tuyendung1 set hoten=?,ngaysinh=?,gioitinh=?,noisinh=?,sdt=?,email=?,cmnd=?,trinhdo=?, "
+                    con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager;user="+username+";password="+password+"");
+                    String sql = "update Tuyendung set hoten=?,ngaysinh=?,gioitinh=?,noisinh=?,sdt=?,email=?,cmnd=?,trinhdo=?, "
                             + "totnghiep=?, vitri=?,chuyennganh=?,ngonngu=?,"
-                            + "kinhnghiem=?, nam=?, dot=?, anh=? where MaNhanVien =?";
+                            + "kinhnghiem=?, nam=?, dot=?, anh=? where MaUngVien =?";
                     PreparedStatement st = con.prepareStatement(sql);
                     st.setString(1, txt_hoten.getText());
                     st.setString(2, txt_ngaysinh.getText());
@@ -647,7 +652,7 @@ public class TuyenDung extends JInternalFrame {
             }
         });
 
-        ImageIcon moi = new ImageIcon("D:\\LUONG FPT KI 4\\Dự án mẫu\\icon\\them.png");
+        ImageIcon moi = new ImageIcon("src//image//save.png");
         btn_themmoi = new JButton("Làm mới", moi);
         btn_themmoi.setBounds(20, 30, 120, 30);
         btn_themmoi.setForeground(Color.blue);
@@ -660,7 +665,7 @@ public class TuyenDung extends JInternalFrame {
             }
         });
 
-        ImageIcon add = new ImageIcon("D:\\LUONG FPT KI 4\\Dự án mẫu\\icon\\luu.png");
+        ImageIcon add = new ImageIcon("src//image//save.png");
         btn_add = new JButton("Thêm", add);
         btn_add.setBounds(20, 90, 120, 30);
         btn_add.setForeground(Color.blue);
@@ -672,7 +677,7 @@ public class TuyenDung extends JInternalFrame {
             }
         });
 
-        ImageIcon sua = new ImageIcon("D:\\LUONG FPT KI 4\\Dự án mẫu\\icon\\sua.png");
+        ImageIcon sua = new ImageIcon("src//image//edit.png");
         btn_sua = new JButton("Cập nhật", sua);
         btn_sua.setBounds(20, 150, 120, 30);
         btn_sua.setForeground(Color.blue);
@@ -684,7 +689,7 @@ public class TuyenDung extends JInternalFrame {
             }
         });
 
-        ImageIcon xoa = new ImageIcon("D:\\LUONG FPT KI 4\\Dự án mẫu\\icon\\xoa.png");
+        ImageIcon xoa = new ImageIcon("src//image//delete.png");
         btn_xoa = new JButton("Xóa", xoa);
         btn_xoa.setBounds(20, 210, 120, 30);
         btn_xoa.setForeground(Color.blue);
@@ -715,13 +720,13 @@ public class TuyenDung extends JInternalFrame {
             }
         });
 
-        ImageIcon timkiem = new ImageIcon("D:\\LUONG FPT KI 4\\Dự án mẫu\\icon\\tim.png");
+        ImageIcon timkiem = new ImageIcon("src//image//search.png");
         btn_timkiem = new JButton("Tìm kiếm", timkiem);
         btn_timkiem.setBounds(840, 25, 120, 30);
         btn_timkiem.setForeground(Color.blue);
         panel1.add(btn_timkiem);
 
-        ImageIcon first = new ImageIcon("D:\\LUONG FPT KI 4\\Dự án mẫu\\icon\\first.png");
+        ImageIcon first = new ImageIcon("src//image//first.png");
         btn_first = new JButton(first);
         btn_first.setBounds(400, 400, 50, 30);
         add(btn_first);
@@ -732,7 +737,7 @@ public class TuyenDung extends JInternalFrame {
             }
         });
 
-        ImageIcon prev = new ImageIcon("D:\\LUONG FPT KI 4\\Dự án mẫu\\icon\\prev.png");
+        ImageIcon prev = new ImageIcon("src//image//prev.png");
         btn_prev = new JButton(prev);
         btn_prev.setBounds(530, 400, 50, 30);
         add(btn_prev);
@@ -743,7 +748,7 @@ public class TuyenDung extends JInternalFrame {
             }
         });
 
-        ImageIcon next = new ImageIcon("D:\\LUONG FPT KI 4\\Dự án mẫu\\icon\\next.png");
+        ImageIcon next = new ImageIcon("src//image//next.png");
         btn_next = new JButton(next);
         btn_next.setBounds(660, 400, 50, 30);
         add(btn_next);
@@ -754,7 +759,7 @@ public class TuyenDung extends JInternalFrame {
             }
         });
 
-        ImageIcon last = new ImageIcon("D:\\LUONG FPT KI 4\\Dự án mẫu\\icon\\last.png");
+        ImageIcon last = new ImageIcon("src//image//last.png");
         btn_last = new JButton(last);
         btn_last.setBounds(790, 400, 50, 30);
         add(btn_last);
@@ -781,7 +786,7 @@ public class TuyenDung extends JInternalFrame {
         btn_anh.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent me) {
-                JFileChooser file = new JFileChooser("src\\image\\");
+                JFileChooser file = new JFileChooser("src\\image\\CV\\");
                 int kq = file.showOpenDialog(file);
                 if (kq == JFileChooser.APPROVE_OPTION) {
                     img = file.getSelectedFile().getName();

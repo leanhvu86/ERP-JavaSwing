@@ -11,8 +11,9 @@ import java.io.Serializable;
  *
  * @author Win
  */
-public class SqlUI implements Serializable{
-    static String userName,password;
+public class SqlUI implements Serializable {
+
+    static String userName, password, serverName;
 
     public SqlUI() {
     }
@@ -32,5 +33,12 @@ public class SqlUI implements Serializable{
     public static void setPassword(String password) {
         SqlUI.password = password;
     }
-    
+
+    public static String getServerName() {
+        return serverName;
+    }
+
+    public static void setServerName(String serverName) {
+        SqlUI.serverName = serverName;
+    }
 }

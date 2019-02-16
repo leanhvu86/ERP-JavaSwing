@@ -5,9 +5,11 @@ package View;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+import entities.SqlUI;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -20,8 +22,10 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Vector;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
@@ -40,7 +44,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
  *
  * @author Administrator
  */
-public class NhanSu extends JFrame {
+public class NhanSu extends JInternalFrame {
 
     JPanel panel1, panel2, panel3, panel4, panel5, panel6;
     JButton btn_them, btn_sua, btn_xoa, btn_timkiem, btn_lammoi, btn_anh,
@@ -63,9 +67,12 @@ public class NhanSu extends JFrame {
     String[] loaihopdong = {"Hợp đồng 1 năm", "Hợp đồng 3 năm", "Hợp đồng dài hạn"};
     DefaultTableModel defaultTableModel;
     DefaultMutableTreeNode root, ketoan, nhansu, kinhdoanh, hanhchinh;
-    String user = "sa", pass = "minh123";
     String url, sql;
     Connection con;
+    SqlUI sqlUI = new SqlUI();
+    private String username = sqlUI.getUserName();
+    private String password = sqlUI.getPassword();
+    String img = null;
 
     public NhanSu() {
 
@@ -294,7 +301,21 @@ public class NhanSu extends JFrame {
         btn_anh = new JButton("CHỌN ẢNH");
         btn_anh.setBounds(50, 30, 180, 230);
         add(btn_anh);
+        btn_anh.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent me) {
+                JFileChooser file = new JFileChooser("src\\image\\CV\\");
+                int kq = file.showOpenDialog(file);
+                if (kq == JFileChooser.APPROVE_OPTION) {
+                    img = file.getSelectedFile().getName();
+                    upImage(img);
+                } else {
+                    JOptionPane.showMessageDialog(null, "Hãy chọn ảnh của ứng viên");
+                }
 
+            }
+
+        });
         panel4 = new JPanel();
         panel4.setBorder(new TitledBorder(null, "Phòng ban", TitledBorder.LEFT, TitledBorder.DEFAULT_POSITION));
         panel4.setBounds(50, 280, 180, 170);
@@ -319,161 +340,161 @@ public class NhanSu extends JFrame {
         btn_them.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (kiemtra() == true) {
+                kiemtra();
+                try {
+                    Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                    url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
+                    con = DriverManager.getConnection(url, username, password);
 
-                    try {
-                        Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-                        url = "jdbc:sqlserver://localhost:1433;databaseName=Employee1";
-                        con = DriverManager.getConnection(url, user, pass);
+                    String sql1 = "insert into NhanVien values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
-                        String sql1 = "insert into NhanVien values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                    PreparedStatement pp = con.prepareStatement(sql1);
 
-                        PreparedStatement pp = con.prepareStatement(sql1);
-
-                        pp.setString(1, txt_id.getText());
-                        System.out.println("1");
-                        pp.setString(2, txt_hoten.getText());
-                        System.out.println("1");
-                        pp.setString(3, txt_ngaysinh.getText());
-                        System.out.println("1");
-                        String gt = null;
-                        if (ra_nam.isSelected()) {
-                            gt = "Nam";
-                        } else if (ra_nu.isSelected()) {
-                            gt = "Nữ";
-                        }
-                        pp.setString(4, gt);
-                        System.out.println("1");
-                        pp.setString(5, txt_noisinh.getText());
-                        System.out.println("1");
-                        pp.setString(6, txt_sdt.getText());
-                        System.out.println("1");
-                        pp.setString(7, txt_email.getText());
-                        System.out.println("1");
-                        pp.setString(8, txt_cmnd.getText());
-                        System.out.println("1");
-                        String trinhdo = null;
-                        if (cbb_trinhdo.getSelectedIndex() == 1) {
-                            trinhdo = "Đại Học";
-                        } else if (cbb_trinhdo.getSelectedIndex() == 2) {
-                            trinhdo = "Cao Đẳng";
-                        } else if (cbb_trinhdo.getSelectedIndex() == 3) {
-                            trinhdo = "Trung Cấp";
-                        }
-                        pp.setString(9, trinhdo);
-                        System.out.println("1");
-                        String totnghieploai = null;
-                        if (cbb_totnghiep.getSelectedIndex() == 1) {
-                            totnghieploai = "Xuất Sắc";
-                        } else if (cbb_totnghiep.getSelectedIndex() == 2) {
-                            totnghieploai = "Giỏi";
-                        } else if (cbb_totnghiep.getSelectedIndex() == 3) {
-                            totnghieploai = "Khá";
-                        } else if (cbb_totnghiep.getSelectedIndex() == 4) {
-                            totnghieploai = "Trung Bình";
-                        }
-                        pp.setString(10, totnghieploai);
-                        System.out.println("1");
-                        String chuyennghanh = null;
-                        if (cbb_chuyennganh.getSelectedIndex() == 1) {
-                            chuyennghanh = "Công Nghệ Thông Tin";
-                        } else if (cbb_chuyennganh.getSelectedIndex() == 2) {
-                            chuyennghanh = "Tài Chính Kế Toán";
-                        } else if (cbb_chuyennganh.getSelectedIndex() == 3) {
-                            chuyennghanh = "Thiết Bị Di Động";
-                        } else if (cbb_chuyennganh.getSelectedIndex() == 4) {
-                            chuyennghanh = "Quản Trị Nhân Lực";
-                        }
-                        pp.setString(11, chuyennghanh);
-                        System.out.println("1");
-                        pp.setString(12, txt_ngonngu.getText());
-                        System.out.println("1");
-                        pp.setString(13, txt_ngayvaolam.getText());
-                        System.out.println("1");
-                        String maphongban = null;
-                        if (cbb_mapb.getSelectedIndex() == 1) {
-                            maphongban = "KINHDOANH";
-                        } else if (cbb_mapb.getSelectedIndex() == 2) {
-                            maphongban = "KETOAN";
-                        } else if (cbb_mapb.getSelectedIndex() == 3) {
-                            maphongban = "NHANSU";
-                        } else if (cbb_mapb.getSelectedIndex() == 4) {
-                            maphongban = "HANHCHINH";
-                        }
-                        pp.setString(14, maphongban);
-                        System.out.println("1");
-                        String tenphongban = null;
-                        if (cbb_tenpb.getSelectedIndex() == 1) {
-                            tenphongban = "Phòng kinh doanh";
-                        } else if (cbb_tenpb.getSelectedIndex() == 2) {
-                            tenphongban = "Phòng Kế Toán";
-                        } else if (cbb_tenpb.getSelectedIndex() == 3) {
-                            tenphongban = "Phòng Nhân Sự";
-                        } else if (cbb_tenpb.getSelectedIndex() == 4) {
-                            tenphongban = "Phòng Hành Chính";
-                        }
-                        pp.setString(15, tenphongban);
-                        System.out.println("1");
-                        String chucvu = null;
-                        if (cbb_chucvu.getSelectedIndex() == 1) {
-                            chucvu = "Nhân Viên";
-                        } else if (cbb_chucvu.getSelectedIndex() == 2) {
-                            chucvu = "Trưởng Phòng";
-                        }
-                        pp.setString(16, chucvu);
-                        System.out.println("1");
-                        pp.setString(17, txt_nguoiquanli.getText());
-                        System.out.println("1");
-                        String loaihopdong = null;
-                        if (cbb_loaihopdong.getSelectedIndex() == 1) {
-                            loaihopdong = "Hợp đồng 1 năm";
-                        } else if (cbb_loaihopdong.getSelectedIndex() == 2) {
-                            loaihopdong = "Hợp Đồng 3 năm";
-                        } else if (cbb_loaihopdong.getSelectedIndex() == 3) {
-                            loaihopdong = "Hợp Đồng Dài Hạn";
-                        }
-                        pp.setString(18, loaihopdong);
-                        System.out.println("1");
-                        pp.execute();
-                        con.close();
-                        pp.close();
-                        String id = txt_id.getText();
-                        String hoten = txt_hoten.getText();
-                        String ngaysinh = txt_ngaysinh.getText();
-                        String noisinh = txt_noisinh.getText();
-                        String sdt = txt_sdt.getText();
-                        String email = txt_email.getText();
-                        String cmnd = txt_cmnd.getText();
-                        String ngonngu = txt_ngonngu.getText();
-                        String ngayvaolam = txt_ngayvaolam.getText();
-                        String mathue = txt_nguoiquanli.getName();
-                        Vector ve = new Vector();
-                        ve.add(id);
-                        ve.add(hoten);
-                        ve.add(ngaysinh);
-                        ve.add(gt);
-                        ve.add(noisinh);
-                        ve.add(sdt);
-                        ve.add(email);
-                        ve.add(cmnd);
-                        ve.add(trinhdo);
-                        ve.add(totnghieploai);
-                        ve.add(chuyennghanh);
-                        ve.add(ngonngu);
-                        ve.add(ngayvaolam);
-                        ve.add(maphongban);
-                        ve.add(tenphongban);
-                        ve.add(chucvu);
-                        ve.add(mathue);
-                        ve.add(loaihopdong);
-                        defaultTableModel.addRow(ve);
-
-                        JOptionPane.showMessageDialog(null, "Đã Thêm Mới Thành Công Nhân Viên " + txt_hoten.getText());
-
-                    } catch (Exception ex) {
-                        JOptionPane.showMessageDialog(null, "Lỗi ở" + ex);
+                    pp.setString(1, txt_id.getText());
+                    System.out.println("1");
+                    pp.setString(2, txt_hoten.getText());
+                    System.out.println("1");
+                    pp.setString(3, txt_ngaysinh.getText());
+                    System.out.println("1");
+                    String gt = null;
+                    if (ra_nam.isSelected()) {
+                        gt = "Nam";
+                    } else if (ra_nu.isSelected()) {
+                        gt = "Nữ";
                     }
+                    pp.setString(4, gt);
+                    System.out.println("1");
+                    pp.setString(5, txt_noisinh.getText());
+                    System.out.println("1");
+                    pp.setString(6, txt_sdt.getText());
+                    System.out.println("1");
+                    pp.setString(7, txt_email.getText());
+                    System.out.println("1");
+                    pp.setString(8, txt_cmnd.getText());
+                    System.out.println("1");
+                    String trinhdo = null;
+                    if (cbb_trinhdo.getSelectedIndex() == 1) {
+                        trinhdo = "Đại Học";
+                    } else if (cbb_trinhdo.getSelectedIndex() == 2) {
+                        trinhdo = "Cao Đẳng";
+                    } else if (cbb_trinhdo.getSelectedIndex() == 3) {
+                        trinhdo = "Trung Cấp";
+                    }
+                    pp.setString(9, trinhdo);
+                    System.out.println("1");
+                    String totnghieploai = null;
+                    if (cbb_totnghiep.getSelectedIndex() == 1) {
+                        totnghieploai = "Xuất Sắc";
+                    } else if (cbb_totnghiep.getSelectedIndex() == 2) {
+                        totnghieploai = "Giỏi";
+                    } else if (cbb_totnghiep.getSelectedIndex() == 3) {
+                        totnghieploai = "Khá";
+                    } else if (cbb_totnghiep.getSelectedIndex() == 4) {
+                        totnghieploai = "Trung Bình";
+                    }
+                    pp.setString(10, totnghieploai);
+                    System.out.println("1");
+                    String chuyennghanh = null;
+                    if (cbb_chuyennganh.getSelectedIndex() == 1) {
+                        chuyennghanh = "Công Nghệ Thông Tin";
+                    } else if (cbb_chuyennganh.getSelectedIndex() == 2) {
+                        chuyennghanh = "Tài Chính Kế Toán";
+                    } else if (cbb_chuyennganh.getSelectedIndex() == 3) {
+                        chuyennghanh = "Thiết Bị Di Động";
+                    } else if (cbb_chuyennganh.getSelectedIndex() == 4) {
+                        chuyennghanh = "Quản Trị Nhân Lực";
+                    }
+                    pp.setString(11, chuyennghanh);
+                    System.out.println("1");
+                    pp.setString(12, txt_ngonngu.getText());
+                    System.out.println("1");
+                    pp.setString(13, txt_ngayvaolam.getText());
+                    System.out.println("1");
+                    String maphongban = null;
+                    if (cbb_mapb.getSelectedIndex() == 1) {
+                        maphongban = "KINHDOANH";
+                    } else if (cbb_mapb.getSelectedIndex() == 2) {
+                        maphongban = "KETOAN";
+                    } else if (cbb_mapb.getSelectedIndex() == 3) {
+                        maphongban = "NHANSU";
+                    } else if (cbb_mapb.getSelectedIndex() == 4) {
+                        maphongban = "HANHCHINH";
+                    }
+                    pp.setString(14, maphongban);
+                    System.out.println("1");
+                    String tenphongban = null;
+                    if (cbb_tenpb.getSelectedIndex() == 1) {
+                        tenphongban = "Phòng kinh doanh";
+                    } else if (cbb_tenpb.getSelectedIndex() == 2) {
+                        tenphongban = "Phòng Kế Toán";
+                    } else if (cbb_tenpb.getSelectedIndex() == 3) {
+                        tenphongban = "Phòng Nhân Sự";
+                    } else if (cbb_tenpb.getSelectedIndex() == 4) {
+                        tenphongban = "Phòng Hành Chính";
+                    }
+                    pp.setString(15, tenphongban);
+                    System.out.println("1");
+                    String chucvu = null;
+                    if (cbb_chucvu.getSelectedIndex() == 1) {
+                        chucvu = "Nhân Viên";
+                    } else if (cbb_chucvu.getSelectedIndex() == 2) {
+                        chucvu = "Trưởng Phòng";
+                    }
+                    pp.setString(16, chucvu);
+                    System.out.println("1");
+                    pp.setString(17, txt_nguoiquanli.getText());
+                    System.out.println("1");
+                    String loaihopdong = null;
+                    if (cbb_loaihopdong.getSelectedIndex() == 1) {
+                        loaihopdong = "Hợp đồng 1 năm";
+                    } else if (cbb_loaihopdong.getSelectedIndex() == 2) {
+                        loaihopdong = "Hợp Đồng 3 năm";
+                    } else if (cbb_loaihopdong.getSelectedIndex() == 3) {
+                        loaihopdong = "Hợp Đồng Dài Hạn";
+                    }
+                    pp.setString(18, loaihopdong);
+                    pp.setString(19, img);
+                    System.out.println("1");
+                    pp.execute();
+                    con.close();
+                    pp.close();
+                    String id = txt_id.getText();
+                    String hoten = txt_hoten.getText();
+                    String ngaysinh = txt_ngaysinh.getText();
+                    String noisinh = txt_noisinh.getText();
+                    String sdt = txt_sdt.getText();
+                    String email = txt_email.getText();
+                    String cmnd = txt_cmnd.getText();
+                    String ngonngu = txt_ngonngu.getText();
+                    String ngayvaolam = txt_ngayvaolam.getText();
+                    String mathue = txt_nguoiquanli.getName();
+                    Vector ve = new Vector();
+                    ve.add(id);
+                    ve.add(hoten);
+                    ve.add(ngaysinh);
+                    ve.add(gt);
+                    ve.add(noisinh);
+                    ve.add(sdt);
+                    ve.add(email);
+                    ve.add(cmnd);
+                    ve.add(trinhdo);
+                    ve.add(totnghieploai);
+                    ve.add(chuyennghanh);
+                    ve.add(ngonngu);
+                    ve.add(ngayvaolam);
+                    ve.add(maphongban);
+                    ve.add(tenphongban);
+                    ve.add(chucvu);
+                    ve.add(mathue);
+                    ve.add(loaihopdong);
+                    defaultTableModel.addRow(ve);
+
+                    JOptionPane.showMessageDialog(null, "Đã Thêm Mới Thành Công Nhân Viên " + txt_hoten.getText());
+
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Lỗi ở" + ex);
                 }
+
             }
         });
 
@@ -484,10 +505,10 @@ public class NhanSu extends JFrame {
         btn_sua.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (kiemtra() == true) {
-                    update();
-                    showTable();
-                }
+                kiemtra();
+                update();
+                showTable();
+
             }
         });
 
@@ -559,18 +580,15 @@ public class NhanSu extends JFrame {
                     txt_id.setText(tbl_nhanvien.getValueAt(indexx, 0).toString());
                     txt_hoten.setText(tbl_nhanvien.getValueAt(indexx, 1).toString());
                     txt_ngaysinh.setText(tbl_nhanvien.getValueAt(indexx, 2).toString());
-                    txt_noisinh.setText(tbl_nhanvien.getValueAt(indexx, 4).toString());
-                    txt_sdt.setText(tbl_nhanvien.getValueAt(indexx, 5).toString());
-                    txt_email.setText(tbl_nhanvien.getValueAt(indexx, 6).toString());
-                    txt_cmnd.setText(tbl_nhanvien.getValueAt(indexx, 7).toString());
-                    txt_ngonngu.setText(tbl_nhanvien.getValueAt(indexx, 11).toString());
-                    txt_ngayvaolam.setText(tbl_nhanvien.getValueAt(indexx, 12).toString());
-                    txt_nguoiquanli.setText(tbl_nhanvien.getValueAt(indexx, 16).toString());
                     if (tbl_nhanvien.getValueAt(indexx, 3).toString().equals("Nam")) {
                         ra_nam.setSelected(true);
                     } else {
                         ra_nu.setSelected(true);
                     }
+                    txt_noisinh.setText(tbl_nhanvien.getValueAt(indexx, 4).toString());
+                    txt_sdt.setText(tbl_nhanvien.getValueAt(indexx, 5).toString());
+                    txt_email.setText(tbl_nhanvien.getValueAt(indexx, 6).toString());
+                    txt_cmnd.setText(tbl_nhanvien.getValueAt(indexx, 7).toString());
                     if (tbl_nhanvien.getValueAt(indexx, 8).toString().equals("Đại Học")) {
                         cbb_trinhdo.setSelectedIndex(1);
                     } else if (tbl_nhanvien.getValueAt(indexx, 8).toString().equals("Cao Đẳng")) {
@@ -578,6 +596,7 @@ public class NhanSu extends JFrame {
                     } else if (tbl_nhanvien.getValueAt(indexx, 8).toString().equals("Trung Cấp")) {
                         cbb_trinhdo.setSelectedIndex(3);
                     }
+
                     if (tbl_nhanvien.getValueAt(indexx, 9).toString().equals("Xuất Sắc")) {
                         cbb_totnghiep.setSelectedIndex(1);
                     } else if (tbl_nhanvien.getValueAt(indexx, 9).toString().equals("Giỏi")) {
@@ -587,6 +606,7 @@ public class NhanSu extends JFrame {
                     } else if (tbl_nhanvien.getValueAt(indexx, 9).toString().equals("Trung Bình")) {
                         cbb_totnghiep.setSelectedIndex(4);
                     }
+
                     if (tbl_nhanvien.getValueAt(indexx, 10).toString().equals("Công nghệ thông tin")) {
                         cbb_chuyennganh.setSelectedIndex(1);
                     } else if (tbl_nhanvien.getValueAt(indexx, 10).toString().equals("Tài chính kế toán")) {
@@ -597,6 +617,8 @@ public class NhanSu extends JFrame {
                     } else if (tbl_nhanvien.getValueAt(indexx, 10).toString().equals("Quản lí nhân viên")) {
                         cbb_chuyennganh.setSelectedIndex(4);
                     }
+                    txt_ngonngu.setText(tbl_nhanvien.getValueAt(indexx, 11).toString());
+                    txt_ngayvaolam.setText(tbl_nhanvien.getValueAt(indexx, 12).toString());
                     if (tbl_nhanvien.getValueAt(indexx, 13).toString().equals("KINHDOANH")) {
                         cbb_mapb.setSelectedIndex(1);
                     } else if (tbl_nhanvien.getValueAt(indexx, 13).toString().equals("KETOAN")) {
@@ -606,6 +628,7 @@ public class NhanSu extends JFrame {
                     } else if (tbl_nhanvien.getValueAt(indexx, 13).toString().equals("HANHCHINH")) {
                         cbb_mapb.setSelectedIndex(4);
                     }
+
                     if (tbl_nhanvien.getValueAt(indexx, 14).toString().equals("Phòng kinh doanh")) {
                         cbb_tenpb.setSelectedIndex(1);
                     } else if (tbl_nhanvien.getValueAt(indexx, 14).toString().equals("Phòng kế toán")) {
@@ -620,6 +643,7 @@ public class NhanSu extends JFrame {
                     } else if (tbl_nhanvien.getValueAt(indexx, 15).toString().equals("Trưởng phòng")) {
                         cbb_chucvu.setSelectedIndex(2);
                     }
+                    txt_nguoiquanli.setText(tbl_nhanvien.getValueAt(indexx, 16).toString());
                     if (tbl_nhanvien.getValueAt(indexx, 17).toString().equals("Hợp đồng 1 năm")) {
                         cbb_loaihopdong.setSelectedIndex(1);
                     } else if (tbl_nhanvien.getValueAt(indexx, 17).toString().equals("Hợp đồng 3 năm")) {
@@ -627,6 +651,8 @@ public class NhanSu extends JFrame {
                     } else if (tbl_nhanvien.getValueAt(indexx, 17).toString().equals("Hợp đồng dài hạn")) {
                         cbb_loaihopdong.setSelectedIndex(3);
                     }
+                    img = tbl_nhanvien.getValueAt(indexx, 18).toString();
+                    upImage(img);
                 }
             }
 
@@ -656,10 +682,12 @@ public class NhanSu extends JFrame {
     }
 
     public void showTable() {
+        defaultTableModel.fireTableDataChanged();
+        defaultTableModel.setRowCount(0);
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            url = "jdbc:sqlserver://localhost:1433;databaseName=Employee1";
-            con = DriverManager.getConnection(url, user, pass);
+            url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
+            con = DriverManager.getConnection(url, username, password);
             System.out.println("Chuc Mung Ban Da Ket Noi Den Toi");
             sql = "select * from NhanVien";
             Statement st = con.createStatement();
@@ -696,10 +724,10 @@ public class NhanSu extends JFrame {
     public boolean update() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            url = "jdbc:sqlserver://localhost:1433;databaseName=Employee1";
-            con = DriverManager.getConnection(url, user, pass);
+            url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
+            con = DriverManager.getConnection(url, username, password);
             sql = "update NhanVien set HoTen=?,NgaySinh=?,GioiTinh=?,DiaChi=?,SoDienThoai=?,Email=?,TheCC=?,TrinhDo=?,"
-                    + "LoaiTotNghiep=?,ChuyenNganh=?,NgoaiNgu=?,NgayVaoLam=?,MaPhongBan=?,TenPhongBan=?,ChucVu=?,MaThue=?,LoaiHD=? where MaNhanVien =?";
+                    + "LoaiTotNghiep=?,ChuyenNganh=?,NgoaiNgu=?,NgayVaoLam=?,MaPhongBan=?,TenPhongBan=?,ChucVu=?,MaThue=?,LoaiHD=?,Anh=? where MaNhanVien =?";
             PreparedStatement pe = con.prepareStatement(sql);
 
             System.out.println("1");
@@ -804,7 +832,8 @@ public class NhanSu extends JFrame {
                 loaihopdong = "Hợp Đồng Dài Hạn";
             }
             pe.setString(17, loaihopdong);
-            pe.setString(18, txt_id.getText());
+            pe.setString(18, img);
+            pe.setString(19, txt_id.getText());
             pe.executeUpdate();
             showTable();
             JOptionPane.showMessageDialog(null, "Update Thành Cong");
@@ -821,8 +850,8 @@ public class NhanSu extends JFrame {
                 JOptionPane.YES_NO_OPTION);
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            url = "jdbc:sqlserver://localhost:1433;databaseName=Employee1";
-            con = DriverManager.getConnection(url, user, pass);
+            url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
+            con = DriverManager.getConnection(url, username, password);
             PreparedStatement pp = con.prepareStatement(sql);
             String sql = "delete from NhanVien where MaNhanVien=?";
             pp.setString(1, txt_id.getText());
@@ -856,7 +885,7 @@ public class NhanSu extends JFrame {
         ra_nu.setSelected(false);
     }
 
-    public boolean kiemtra() {
+    public void kiemtra() {
         if (txt_cmnd.getText().isEmpty() && txt_email.getText().isEmpty() && txt_hoten.getText().isEmpty() && txt_id.getText().isEmpty() && txt_ngaysinh.getText().isEmpty()
                 && txt_ngayvaolam.getText().isEmpty() && txt_ngonngu.getText().isEmpty() && txt_nguoiquanli.getText().isEmpty() && txt_noisinh.getText().isEmpty() && txt_sdt.getText().isEmpty()
                 && !ra_nam.isSelected() && !ra_nu.isSelected()) {
@@ -885,16 +914,21 @@ public class NhanSu extends JFrame {
             JOptionPane.showMessageDialog(null, "Lỗi Định dạng căn cước");
         } else if (!txt_email.getText().matches("^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$")) {
             JOptionPane.showMessageDialog(null, "Lỗi định dạng mail");
-        } else if (!txt_ngaysinh.getText().matches("\\d{2}+\\+\\d{2}+\\+\\d{4}")) {
+        } else if (!txt_ngaysinh.getText().matches("\\d{2}+\\-+\\d{2}+\\-+\\d{4}")) {
             JOptionPane.showMessageDialog(null, "Lỗi định dạng ngày");
-        } else if (!txt_ngayvaolam.getText().matches("\\d{2}+\\+\\d{2}+\\+\\d{4}")) {
+        } else if (!txt_ngayvaolam.getText().matches("\\d{2}+\\-+\\d{2}+\\-+\\d{4}")) {
             JOptionPane.showMessageDialog(null, "LỖI định dạng ngày vào làm");
         } else if (!txt_sdt.getText().matches("0\\d{12}")) {
             JOptionPane.showMessageDialog(null, "LỖi định dạng SDT");
 
         }
-        return true;
 
     }
 
+    public void upImage(String img) {
+        ImageIcon anh = new ImageIcon("src\\image\\CV\\" + img);
+        Image image = anh.getImage();
+        ImageIcon anh1 = new ImageIcon(image.getScaledInstance(btn_anh.getWidth(), btn_anh.getHeight(), image.SCALE_SMOOTH));
+        btn_anh.setIcon(anh1);
+    }
 }

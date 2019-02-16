@@ -38,6 +38,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.MouseInputListener;
@@ -45,7 +46,7 @@ import javax.swing.table.DefaultTableModel;
 
 public final class Daotao extends JInternalFrame {
 
-    private JPanel contentPane;
+    private JPanel contentPane,panel2;
     private JTextField txtMalop, txtTenLop, txtGhiChu, errMsg, txtTuNgay, txtDenNgay;
     private JComboBox cmbPhongBan;
     private JTextArea areaDanhSach;
@@ -92,39 +93,37 @@ public final class Daotao extends JInternalFrame {
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
-
-        JLabel title = new JLabel("DANH SÁCH LỚP ĐÀO TẠO");
-        title.setFont(new Font("Tahoma", Font.BOLD, 16));
-        title.setForeground(Color.DARK_GRAY);
-        title.setBounds(450, 0, 250, 40);
-        contentPane.add(title);
-
+        panel2 = new JPanel();
+        panel2.setBorder(new TitledBorder(null, "", TitledBorder.LEFT, TitledBorder.DEFAULT_POSITION));
+        panel2.setBounds(0, 5, 850, 390);
+        panel2.setLayout(null);
+        contentPane.add(panel2);
         JLabel maLop = new JLabel("MÃ LỚP");
-        maLop.setBounds(50, 35, 150, 25);
-        contentPane.add(maLop);
+        maLop.setBounds(50, 10, 150, 25);
+        panel2.add(maLop);
 
         txtMalop = new JTextField();
-        txtMalop.setBounds(200, 35, 250, 25);
-        contentPane.add(txtMalop);
+        txtMalop.setBounds(200, 10, 250, 25);
+        panel2.add(txtMalop);
 
         JLabel tenLop = new JLabel("TẾN LỚP");
-        tenLop.setBounds(50, 85, 150, 25);
-        contentPane.add(tenLop);
+        tenLop.setBounds(50, 55, 150, 25);
+        panel2.add(tenLop);
 
         txtTenLop = new JTextField();
-        txtTenLop.setBounds(200, 85, 550, 25);
-        contentPane.add(txtTenLop);
+        txtTenLop.setBounds(200, 55, 550, 25);
+        panel2.add(txtTenLop);
 
         JLabel phongBan = new JLabel("MÃ PHÒNG BAN");
-        phongBan.setBounds(50, 135, 150, 25);
-        contentPane.add(phongBan);
+        phongBan.setBounds(50, 100, 150, 25);
+        panel2.add(phongBan);
         fillCombobox();
         cmbPhongBan = new JComboBox(Name);
-        cmbPhongBan.setBounds(200, 135, 250, 25);
+        cmbPhongBan.setBounds(200, 100, 250, 25);
         cmbPhongBan.setSelectedIndex(0);
         cmbPhongBan.setBackground(Color.white);
         JScrollPane ListScrollPane = new JScrollPane(cmbPhongBan);
-        contentPane.add(cmbPhongBan);
+        panel2.add(cmbPhongBan);
         cmbPhongBan.addItemListener(new ItemListener() {
             @Override
             public void itemStateChanged(ItemEvent ie) {
@@ -145,21 +144,21 @@ public final class Daotao extends JInternalFrame {
         });
 
         JLabel thoiGian = new JLabel("THỜI GIAN");
-        thoiGian.setBounds(50, 185, 150, 25);
-        contentPane.add(thoiGian);
+        thoiGian.setBounds(50, 145, 150, 25);
+        panel2.add(thoiGian);
 
         JLabel tuNgay = new JLabel("TỪ NGÀY");
-        tuNgay.setBounds(200, 185, 150, 25);
-        contentPane.add(tuNgay);
+        tuNgay.setBounds(200, 145, 150, 25);
+        panel2.add(tuNgay);
 
         txtTuNgay = new JTextField();
-        txtTuNgay.setBounds(280, 185, 150, 25);
-        contentPane.add(txtTuNgay);
+        txtTuNgay.setBounds(280, 145, 150, 25);
+        panel2.add(txtTuNgay);
 
         btnTuNgay = new JButton(new ImageIcon("src\\image\\datetimepicker.png"));
         btnTuNgay.setForeground(Color.BLUE);
-        btnTuNgay.setBounds(430, 185, 25, 25);
-        contentPane.add(btnTuNgay);
+        btnTuNgay.setBounds(430, 145, 25, 25);
+        panel2.add(btnTuNgay);
         btnTuNgay.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
@@ -173,16 +172,16 @@ public final class Daotao extends JInternalFrame {
         });
 
         JLabel denNgay = new JLabel("ĐẾN NGÀY");
-        denNgay.setBounds(480, 185, 150, 25);
-        contentPane.add(denNgay);
+        denNgay.setBounds(480, 145, 150, 25);
+        panel2.add(denNgay);
 
         txtDenNgay = new JTextField();
-        txtDenNgay.setBounds(560, 185, 150, 25);
-        contentPane.add(txtDenNgay);
+        txtDenNgay.setBounds(560, 145, 150, 25);
+        panel2.add(txtDenNgay);
 
         btnDenNgay = new JButton(new ImageIcon("src\\image\\datetimepicker.png"));
         btnDenNgay.setForeground(Color.BLUE);
-        btnDenNgay.setBounds(710, 185, 25, 25);
+        btnDenNgay.setBounds(710, 145, 25, 25);
         contentPane.add(btnDenNgay);
         btnDenNgay.addActionListener(new ActionListener() {
             @Override
@@ -197,41 +196,43 @@ public final class Daotao extends JInternalFrame {
         });
 
         JLabel danhSach = new JLabel("DANH SÁCH");
-        danhSach.setBounds(50, 235, 150, 25);
-        contentPane.add(danhSach);
+        danhSach.setBounds(50, 190, 150, 25);
+        panel2.add(danhSach);
 
         areaDanhSach = new JTextArea();
-        areaDanhSach.setBounds(200, 235, 550, 100);
-        contentPane.add(areaDanhSach);
+        areaDanhSach.setBounds(200, 190, 550, 100);
+        panel2.add(areaDanhSach);
         textArea = new JScrollPane(areaDanhSach);
-        textArea.setBounds(200, 235, 550, 100);
+        textArea.setBounds(200, 190, 550, 100);
         textArea.setVisible(true);
-        contentPane.add(textArea);
+        panel2.add(textArea);
         areaDanhSach.setEditable(false);
         areaDanhSach.setLineWrap(true);
 
         JLabel ghichu = new JLabel("GHI CHÚ");
-        ghichu.setBounds(50, 355, 150, 25);
-        contentPane.add(ghichu);
+        ghichu.setBounds(50, 315, 150, 25);
+        panel2.add(ghichu);
 
         txtGhiChu = new JTextField();
-        txtGhiChu.setBounds(200, 355, 550, 25);
-        contentPane.add(txtGhiChu);
+        txtGhiChu.setBounds(200, 315, 550, 25);
+        panel2.add(txtGhiChu);
 
         errMsg = new JTextField();
-        errMsg.setBounds(200, 385, 250, 18);
+        errMsg.setBounds(200, 345, 250, 18);
         errMsg.setFont(new Font("Tahoma", Font.ITALIC, 14));
         errMsg.setBorder(null);
         errMsg.setForeground(Color.red);
-        contentPane.add(errMsg);
+        panel2.add(errMsg);
 
+        
         ImageIcon icon = new ImageIcon("src\\image\\search.png");
         btnTimKiem = new JButton("TÌM KIẾM", icon);
         btnTimKiem.setForeground(Color.BLUE);
         btnTimKiem.setBounds(80, 405, 120, 25);
         contentPane.add(btnTimKiem);
 
-        btnLamMoi = new JButton("LÀM MỚI");
+        ImageIcon icon6 = new ImageIcon("src\\image\\them.png");
+        btnLamMoi = new JButton("LÀM MỚI",icon6);
         btnLamMoi.setForeground(Color.BLUE);
         btnLamMoi.setBounds(220, 405, 120, 25);
         btnLamMoi.addActionListener(new ActionListener() {
@@ -308,7 +309,7 @@ public final class Daotao extends JInternalFrame {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 int result = JOptionPane.showConfirmDialog(null,
-                        "Bạn muốn xóa dữ liệu lớp đào tạo?",
+                        "Bạn muốn xóa lớp đào tạo?",
                         "Confirm",
                         JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
@@ -411,17 +412,18 @@ public final class Daotao extends JInternalFrame {
         model.setRowCount(0);
         danhsach = "";
         try {
-
+            System.out.println(maPhongBan);
             List<NhanVien> list = daoTaoMgr.getListNhanVien(maPhongBan);
-            if (!list.isEmpty()) {
+
+            if (list.size() > 0) {
                 list.forEach((E) -> {
                     model.addRow(new Object[]{E.getMaNhanVien(), E.getTenNhanVien(), true});
                     danhsach += E.getMaNhanVien() + ";";
                     areaDanhSach.setText(danhsach);
                 });
+                listNhanVien.setModel(model);
             }
 
-            listNhanVien.setModel(model);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -26,7 +26,7 @@ import java.awt.event.KeyEvent;
 public class sqlUI extends JInternalFrame {
 
     JPasswordField txtPass;
-    JTextField txtUser;
+    JTextField txtUser, txtServerName;
     JLabel errMsg;
 
     public LoginMgr loginMgr = new LoginMgr();
@@ -49,17 +49,18 @@ public class sqlUI extends JInternalFrame {
         jPanel.setBorder(new TitledBorder(new LineBorder(new Color(123123)), "Kết nối Database", TitledBorder.CENTER,
                 TitledBorder.TOP, null, new Color(123123)));
 
-        JLabel lbl = new JLabel("Mời bạn nhập thông tin tài khoản đăng nhập SQL SERVER");
-        lbl.setBounds(80, 25, 350, 30);
-        JLabel lblUser = new JLabel("USERNAME:");
+        JLabel lbl = new JLabel("Server name");
+        lbl.setBounds(150, 20, 100, 30);
+        JLabel lblUser = new JLabel("Username:");
         lblUser.setBounds(150, 80, 100, 30);
 
-        JLabel lblPass = new JLabel("PASSWORD");
+        JLabel lblPass = new JLabel("Password:");
         lblPass.setBounds(150, 140, 100, 30);
         jPanel.add(lbl);
         jPanel.add(lblUser);
         jPanel.add(lblPass);
-
+        txtServerName = new JTextField();
+        txtServerName.setBounds(270, 20, 215, 30);
         txtUser = new JTextField();
         txtUser.setBounds(270, 80, 215, 30);
 
@@ -109,7 +110,7 @@ public class sqlUI extends JInternalFrame {
         jPanel.add(txtPass);
 
         jPanel.add(txtUser);
-
+        jPanel.add(txtServerName);
         JButton btnLogin = new JButton("Login");
 
         btnLogin.setBounds(
@@ -126,6 +127,7 @@ public class sqlUI extends JInternalFrame {
                     SqlUI sqlUI = new SqlUI();
                     sqlUI.setUserName(user);
                     sqlUI.setPassword(pass);
+                    sqlUI.setServerName(txtServerName.getText());
                     if (loginMgr.checkDataBase(user, pass) == true) {
                         setVisible(false);
                         JOptionPane.showMessageDialog(null, "Kết nối Thành Công!!");
