@@ -883,14 +883,13 @@ public class NhanSu extends JFrame {
             JOptionPane.showMessageDialog(null, "Không để trống sdt");
         } else if (!txt_cmnd.getText().matches("//d{12}")) {
             JOptionPane.showMessageDialog(null, "Lỗi Định dạng căn cước");
-
         } else if (!txt_email.getText().matches("^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$")) {
             JOptionPane.showMessageDialog(null, "Lỗi định dạng mail");
-        } else if (!txt_ngaysinh.getText().matches("//d{2}/////d{2}/////d{4}")) {
+        } else if (!txt_ngaysinh.getText().matches("\\d{2}+\\+\\d{2}+\\+\\d{4}")) {
             JOptionPane.showMessageDialog(null, "Lỗi định dạng ngày");
-        } else if (!txt_ngayvaolam.getText().matches("//d{2}/////d{2}/////d{4}")) {
+        } else if (!txt_ngayvaolam.getText().matches("\\d{2}+\\+\\d{2}+\\+\\d{4}")) {
             JOptionPane.showMessageDialog(null, "LỖI định dạng ngày vào làm");
-        } else if (!txt_sdt.getText().matches("0//d{12}")) {
+        } else if (!txt_sdt.getText().matches("0\\d{12}")) {
             JOptionPane.showMessageDialog(null, "LỖi định dạng SDT");
 
         }
