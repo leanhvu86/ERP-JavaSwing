@@ -60,6 +60,15 @@ public class DaoTaoMgr {
         }
         return false;
     }
+    public boolean deleteDaoTaoByID(String maLop) {
+        try {
+            return daoTaoDAOImpl.deleteDaoTaoByID(maLop);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 
     public boolean getDaoTaoById(String maLop) {
         try {

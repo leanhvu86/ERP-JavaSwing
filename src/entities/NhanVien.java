@@ -16,6 +16,11 @@ public class NhanVien {
     public NhanVien() {
     }
 
+    public NhanVien(String maNhanVien, String tenNhanVien) {
+        this.maNhanVien = maNhanVien;
+        this.tenNhanVien = tenNhanVien;
+    }
+
     public NhanVien( String maNhanVien, String tenNhanVien, String ngaySinh, String maPhongBan, String gioiTinh, String dienThoai, String diaChi, String email, String theCanCuoc, String chuyenNganh, String cVHoanThanh, String kNLamViec, String yThucLamViec, String thamGiaHD, String anhCaNhan, String cVBanThan, String ghiChu, String maNhomQuyen) {
        
         this.maNhanVien = maNhanVien;

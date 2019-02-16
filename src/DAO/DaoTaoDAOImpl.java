@@ -17,6 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -31,7 +32,7 @@ public class DaoTaoDAOImpl implements DaoTaoDAO {
     @Override
     public List<PhongBan> getListPhongBan() {
         List<PhongBan> list = new ArrayList<>();
-        System.out.println(username+"fdsfd"+password);
+        System.out.println(username + "fdsfd" + password);
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             String url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
@@ -77,25 +78,8 @@ public class DaoTaoDAOImpl implements DaoTaoDAO {
             while (rs.next()) {
                 String maNV = rs.getString("MaNhanVien");
                 String tenNV = rs.getString("TenNhanVien");
-                String ngaySinh = rs.getString("NgaySinh");
-                String maPhongBan1 = rs.getString("MaPhongBan");
-                String GioiTinh = rs.getString("GioiTinh");
-                String DienThoai = rs.getString("DienThoai");
-                String DiaChi = rs.getString("DiaChi");
-                String Email = rs.getString("Email");
-                int TheCanCuoc = rs.getInt("TheCanCuoc");
-                String theCanCuoc = Integer.toString(TheCanCuoc);
-                String ChuyenNganh = rs.getString("ChuyenNganh");
-                String cVHoanThanh = rs.getString("CongViecHoanThanh");
-                String kNLamViec = rs.getString("KyNangLamViec");
-                String yThucLamViec = rs.getString("YThucLamViec");
-                String thamGiaHD = rs.getString("ThamGiaHoatDong");
-                String anhCaNhan = rs.getString("AnhCaNhan");
-                String cVBanThan = rs.getString("AnhCaNhan");
-                String ghiChu = rs.getString("GhiChu");
-                String maNhomQuyen = rs.getString("MaNhomQuyen");
-                String passWord = rs.getString("Password");
-                NhanVien e = new NhanVien(maNV, tenNV, ngaySinh, maPhongBan1, GioiTinh, DienThoai, DiaChi, Email, theCanCuoc, ChuyenNganh, cVHoanThanh, kNLamViec, yThucLamViec, thamGiaHD, anhCaNhan, cVBanThan, ghiChu, maNhomQuyen, passWord);
+
+                NhanVien e = new NhanVien(maNV, tenNV);
                 list.add(e);
             }
             if (list.size() != 0) {
@@ -113,30 +97,60 @@ public class DaoTaoDAOImpl implements DaoTaoDAO {
 
     @Override
     public boolean saveDaoTao(DaoTao daoTao) {
-        try {
-            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
-            Connection con = DriverManager.getConnection(url, username, password);
-            String sql = "insert into DaoTao values(?,?,?,?,?,?,?)";
-            PreparedStatement st = con.prepareStatement(sql);
-            st.setString(1, daoTao.getMaLop());
-            st.setString(2, daoTao.getTenLop());
-            st.setString(3, daoTao.getDanhSach());
-            st.setString(4, daoTao.getMaPhongBan());
-            st.setString(5, daoTao.getTuNgay());
-            st.setString(6, daoTao.getDenNgay());
-            st.setString(7, daoTao.getGhiChu());
-            st.executeUpdate();
-            if (st.getUpdateCount() > 0) {
-                return true;
-            }
-            st.close();
-            con.close();
+        if (getDaoTaoById(daoTao.getMaLop()) == false) {
+            try {
+                Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                String url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
+                Connection con = DriverManager.getConnection(url, username, password);
+                String sql = "insert into DaoTao values(?,?,?,?,?,?,?,1)";
+                PreparedStatement st = con.prepareStatement(sql);
+                st.setString(1, daoTao.getMaLop());
+                st.setString(2, daoTao.getTenLop());
+                st.setString(3, daoTao.getDanhSach());
+                st.setString(4, daoTao.getMaPhongBan());
+                st.setString(5, daoTao.getTuNgay());
+                st.setString(6, daoTao.getDenNgay());
+                st.setString(7, daoTao.getGhiChu());
+                st.executeUpdate();
+                if (st.getUpdateCount() > 0) {
+                    return true;
+                }
+                st.close();
+                con.close();
 
-        } catch (Exception e) {
-            System.out.println(e);
-            return false;
+            } catch (Exception e) {
+                System.out.println(e);
+                return false;
+            }
+        } else {
+            try {
+                Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                String url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
+                Connection con = DriverManager.getConnection(url, username, password);
+                String sql = "update DaoTao set TenLop=?,danhsach=?,maphongban=?,"
+                        + "tungay=?,denngay=?,ghichu=?  where Malop like ?";
+                PreparedStatement st = con.prepareStatement(sql);
+
+                st.setString(1, daoTao.getTenLop());
+                st.setString(2, daoTao.getDanhSach());
+                st.setString(3, daoTao.getMaPhongBan());
+                st.setString(4, daoTao.getTuNgay());
+                st.setString(5, daoTao.getDenNgay());
+                st.setString(6, daoTao.getGhiChu());
+                st.setString(7, daoTao.getMaLop());
+                st.executeUpdate();
+                if (st.getUpdateCount() > 0) {
+                    return true;
+                }
+                st.close();
+                con.close();
+
+            } catch (Exception e) {
+                System.out.println(e);
+                return false;
+            }
         }
+
         return false;
     }
 
@@ -173,7 +187,7 @@ public class DaoTaoDAOImpl implements DaoTaoDAO {
             String url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
 
             Connection con = DriverManager.getConnection(url, username, password);
-            String sql = "select * from DaoTao where 1=1";
+            String sql = "select * from DaoTao where status=1";
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
@@ -201,4 +215,25 @@ public class DaoTaoDAOImpl implements DaoTaoDAO {
         return null;
     }
 
+    @Override
+    public boolean deleteDaoTaoByID(String maLop) {
+      
+            try {
+                Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                String url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
+
+                try (Connection con = DriverManager.getConnection(url, username, password)) {
+                    String sql = "update daotao set status =0 where malop = ? ";
+                    PreparedStatement st = con.prepareStatement(sql);
+                    st.setString(1, maLop);
+                    st.executeUpdate();
+
+                    st.close();
+                    return true;
+                }
+            } catch (ClassNotFoundException | SQLException e) {
+                System.out.println(e);
+                return false;
+            }
+    }
 }
