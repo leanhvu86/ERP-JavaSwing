@@ -19,6 +19,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import Controller.LoginMgr;
+import entities.Config;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
@@ -48,10 +49,10 @@ public class Login extends JInternalFrame {
         jPanel.setBorder(new TitledBorder(new LineBorder(new Color(123123)), "Login", TitledBorder.CENTER,
                 TitledBorder.TOP, null, new Color(123123)));
 
-        JLabel lblUser = new JLabel("USERNAME:");
+        JLabel lblUser = new JLabel("Username:");
         lblUser.setBounds(150, 50, 100, 30);
 
-        JLabel lblPass = new JLabel("PASSWORD");
+        JLabel lblPass = new JLabel("Password:");
         lblPass.setBounds(150, 110, 100, 30);
 
         jPanel.add(lblUser);
@@ -59,7 +60,7 @@ public class Login extends JInternalFrame {
 
         txtUser = new JTextField();
         txtUser.setBounds(270, 50, 215, 30);
-        
+
         txtPass = new JPasswordField();
         txtPass.setBounds(270, 110, 215, 30);
         txtPass.addKeyListener(new KeyAdapter() {
@@ -68,7 +69,7 @@ public class Login extends JInternalFrame {
                 super.keyPressed(ke);
                 String user = txtUser.getText();
                 String pass = txtPass.getText();
-
+                user = user.trim();
                 if (ke.getKeyCode() == KeyEvent.VK_ENTER) {
                     if (check()) {
                         if (loginMgr.checkLogin(user, pass)) {
@@ -95,16 +96,16 @@ public class Login extends JInternalFrame {
         jPanel.add(txtPass);
         jPanel.add(txtUser);
 
-        JButton btnLogin = new JButton("Login");
+        JButton btnLogin = new JButton("Đăng nhập");
         btnLogin.setBounds(270, 200, 100, 50);
         btnLogin.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 String user = txtUser.getText();
+                user = user.trim();
                 String pass = txtPass.getText();
                 if (check()) {
-
                     if (loginMgr.checkLogin(user, pass)) {
 
                         setVisible(false);
@@ -117,7 +118,7 @@ public class Login extends JInternalFrame {
             }
         });
 
-        JButton btnCanel = new JButton("Canel");
+        JButton btnCanel = new JButton("Thoát");
         btnCanel.setBounds(385, 200, 100, 50);
         btnCanel.addActionListener(new ActionListener() {
 

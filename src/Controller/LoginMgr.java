@@ -2,6 +2,7 @@ package Controller;
 
 import DAO.LoginDAOImpl;
 import DAO.LoginDAO;
+import entities.Config;
 
 public class LoginMgr {
 
@@ -19,15 +20,34 @@ public class LoginMgr {
 
     }
 
-    public boolean checkDataBase(String username, String password) {
+    public boolean checkDataBase(String url, String username, String password) {
         try {
 
-            return loginDAOImpl.checkDataBase(username, password);
+            return loginDAOImpl.checkDataBase(url, username, password);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return false;
 
+    }
+
+    public Config getConnfig() {
+        try {
+            return loginDAOImpl.getConfig();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
+    public boolean checkConfig() {
+        try {
+            return loginDAOImpl.checkConfig();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

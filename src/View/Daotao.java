@@ -46,7 +46,7 @@ import javax.swing.table.DefaultTableModel;
 
 public final class Daotao extends JInternalFrame {
 
-    private JPanel contentPane,panel2;
+    private JPanel contentPane, panel2;
     private JTextField txtMalop, txtTenLop, txtGhiChu, errMsg, txtTuNgay, txtDenNgay;
     private JComboBox cmbPhongBan;
     private JTextArea areaDanhSach;
@@ -95,10 +95,10 @@ public final class Daotao extends JInternalFrame {
         contentPane.setLayout(null);
         panel2 = new JPanel();
         panel2.setBorder(new TitledBorder(null, "", TitledBorder.LEFT, TitledBorder.DEFAULT_POSITION));
-        panel2.setBounds(0, 5, 850, 390);
+        panel2.setBounds(15, 10, 830, 370);
         panel2.setLayout(null);
         contentPane.add(panel2);
-        JLabel maLop = new JLabel("MÃ LỚP");
+        JLabel maLop = new JLabel("Mã lớp");
         maLop.setBounds(50, 10, 150, 25);
         panel2.add(maLop);
 
@@ -106,7 +106,7 @@ public final class Daotao extends JInternalFrame {
         txtMalop.setBounds(200, 10, 250, 25);
         panel2.add(txtMalop);
 
-        JLabel tenLop = new JLabel("TẾN LỚP");
+        JLabel tenLop = new JLabel("Tên lớp");
         tenLop.setBounds(50, 55, 150, 25);
         panel2.add(tenLop);
 
@@ -114,7 +114,7 @@ public final class Daotao extends JInternalFrame {
         txtTenLop.setBounds(200, 55, 550, 25);
         panel2.add(txtTenLop);
 
-        JLabel phongBan = new JLabel("MÃ PHÒNG BAN");
+        JLabel phongBan = new JLabel("Mã phòng ban");
         phongBan.setBounds(50, 100, 150, 25);
         panel2.add(phongBan);
         fillCombobox();
@@ -132,6 +132,13 @@ public final class Daotao extends JInternalFrame {
                     String maPhongBan = cmbPhongBan.getSelectedItem().toString();
                     if (!maPhongBan.equals("Mã Phòng Ban")) {
                         initTable(maPhongBan);
+                        txtMalop.setText("");
+                        txtMalop.setEditable(true);
+                        txtTenLop.setText("");
+                        txtTuNgay.setText("");
+                        txtDenNgay.setText("");
+                        txtGhiChu.setText("");
+                        areaDanhSach.setText("");
                     } else {
                         model.fireTableDataChanged();
                         model.setRowCount(0);
@@ -143,11 +150,11 @@ public final class Daotao extends JInternalFrame {
             }
         });
 
-        JLabel thoiGian = new JLabel("THỜI GIAN");
+        JLabel thoiGian = new JLabel("Thời gian");
         thoiGian.setBounds(50, 145, 150, 25);
         panel2.add(thoiGian);
 
-        JLabel tuNgay = new JLabel("TỪ NGÀY");
+        JLabel tuNgay = new JLabel("Từ ngày");
         tuNgay.setBounds(200, 145, 150, 25);
         panel2.add(tuNgay);
 
@@ -157,7 +164,7 @@ public final class Daotao extends JInternalFrame {
 
         btnTuNgay = new JButton(new ImageIcon("src\\image\\datetimepicker.png"));
         btnTuNgay.setForeground(Color.BLUE);
-        btnTuNgay.setBounds(430, 145, 25, 25);
+        btnTuNgay.setBounds(435, 145, 25, 25);
         panel2.add(btnTuNgay);
         btnTuNgay.addActionListener(new ActionListener() {
             @Override
@@ -171,7 +178,7 @@ public final class Daotao extends JInternalFrame {
             }
         });
 
-        JLabel denNgay = new JLabel("ĐẾN NGÀY");
+        JLabel denNgay = new JLabel("Đến ngày");
         denNgay.setBounds(480, 145, 150, 25);
         panel2.add(denNgay);
 
@@ -181,7 +188,7 @@ public final class Daotao extends JInternalFrame {
 
         btnDenNgay = new JButton(new ImageIcon("src\\image\\datetimepicker.png"));
         btnDenNgay.setForeground(Color.BLUE);
-        btnDenNgay.setBounds(710, 145, 25, 25);
+        btnDenNgay.setBounds(730, 155, 25, 25);
         contentPane.add(btnDenNgay);
         btnDenNgay.addActionListener(new ActionListener() {
             @Override
@@ -195,7 +202,7 @@ public final class Daotao extends JInternalFrame {
             }
         });
 
-        JLabel danhSach = new JLabel("DANH SÁCH");
+        JLabel danhSach = new JLabel("Danh sách");
         danhSach.setBounds(50, 190, 150, 25);
         panel2.add(danhSach);
 
@@ -209,7 +216,7 @@ public final class Daotao extends JInternalFrame {
         areaDanhSach.setEditable(false);
         areaDanhSach.setLineWrap(true);
 
-        JLabel ghichu = new JLabel("GHI CHÚ");
+        JLabel ghichu = new JLabel("Ghi chú");
         ghichu.setBounds(50, 315, 150, 25);
         panel2.add(ghichu);
 
@@ -223,16 +230,83 @@ public final class Daotao extends JInternalFrame {
         errMsg.setBorder(null);
         errMsg.setForeground(Color.red);
         panel2.add(errMsg);
-
-        
         ImageIcon icon = new ImageIcon("src\\image\\search.png");
-        btnTimKiem = new JButton("TÌM KIẾM", icon);
+        btnTimKiem = new JButton("Tìm kiếm", icon);
         btnTimKiem.setForeground(Color.BLUE);
         btnTimKiem.setBounds(80, 405, 120, 25);
         contentPane.add(btnTimKiem);
+        btnTimKiem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                String maLop = txtMalop.getText();
+                if (txtMalop.getText().length() > 10) {
+                    errMsg.setText("Độ dài mã lớp không hợp lệ (<= 10 kí tự)");
+                    txtMalop.requestFocus();
+                    return;
+                }
+                String maPhongBan = "";
+                if (cmbPhongBan.getSelectedIndex() != 0) {
+                    maPhongBan = cmbPhongBan.getSelectedItem().toString();
+                }
+                String tuNgay = txtTuNgay.getText();
+                String denNgay = txtDenNgay.getText();
+                String datePattern = "\\d{1,2}-\\d{1,2}-\\d{4}";
+                boolean isDate = false;
+                if (!tuNgay.equals("")) {
+                    isDate = tuNgay.matches(datePattern);
+                    if (isDate == false) {
+                        errMsg.setText("Không đúng định dạng ngày tháng");
+                        txtTuNgay.requestFocus();
+                        return;
+                    }
+                }
+                errMsg.setText("");
+                if (!denNgay.equals("")) {
+                    isDate = denNgay.matches(datePattern);
+                    if (isDate == false) {
+                        errMsg.setText("Không đúng định dạng ngày tháng");
+                        txtDenNgay.requestFocus();
+                        return;
+                    }
+                }
+                if (!tuNgay.equals("") && !denNgay.equals("")) {
+                    SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+                    Date tuNgay1 = null;
+                    Date denNgay1 = null;
+                    Date now = new Date();
+                    try {
+                        tuNgay1 = format.parse(tuNgay);
+                        denNgay1 = format.parse(denNgay);
+                    } catch (ParseException ex) {
+                        Logger.getLogger(Daotao.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    boolean before = tuNgay1.before(denNgay1);
+                    if (before == false) {
+                        errMsg.setText("Từ ngày phải trước đến ngày");
+                        txtDenNgay.requestFocus();
+                        return;
+                    }
+                }
 
+                errMsg.setText("");
+                try {
+                    List<DaoTao> list = daoTaoMgr.getListDaoTao(maLop, maPhongBan, tuNgay, denNgay);
+                    if (list.size() > 0) {
+                        loadTableDaoTao(list);
+                        JOptionPane.showMessageDialog(d, "Thông tin lớp đào tạo bạn tìm như sau: ");
+                    } else {
+                        JOptionPane.showMessageDialog(d, "Tìm kiếm thất bại ");
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(d, "Không tồn tại lớp đào tạo có thông tin như trên ");
+                }
+
+            }
+        });
         ImageIcon icon6 = new ImageIcon("src\\image\\them.png");
-        btnLamMoi = new JButton("LÀM MỚI",icon6);
+        btnLamMoi = new JButton("Làm mới", icon6);
         btnLamMoi.setForeground(Color.BLUE);
         btnLamMoi.setBounds(220, 405, 120, 25);
         btnLamMoi.addActionListener(new ActionListener() {
@@ -243,13 +317,27 @@ public final class Daotao extends JInternalFrame {
         });
         contentPane.add(btnLamMoi);
         ImageIcon icon1 = new ImageIcon("src\\image\\save.png");
-        btnThem = new JButton("THÊM", icon1);
+        btnThem = new JButton("Thêm", icon1);
         btnThem.setForeground(Color.BLUE);
         btnThem.setBounds(360, 405, 120, 25);
         btnThem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
                 if (checkDaoTao()) {
+                    SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+                    Date tuNgay = null;
+                    Date now = new Date();
+                    try {
+                        tuNgay = format.parse(txtTuNgay.getText());
+                    } catch (ParseException ex) {
+                        Logger.getLogger(Daotao.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                    boolean beforeDatanow = tuNgay.before(now);
+                    if (beforeDatanow == true) {
+                        errMsg.setText("Từ ngày phải trước sau hiện tại");
+                        txtTuNgay.requestFocus();
+                        return;
+                    }
                     if (daoTaoMgr.getDaoTaoById(txtMalop.getText()) == true) {
                         errMsg.setText("Không được trùng mã lớp");
                         txtMalop.requestFocus();
@@ -276,7 +364,7 @@ public final class Daotao extends JInternalFrame {
         });
 
         ImageIcon icon2 = new ImageIcon("src\\image\\edit.png");
-        btnSua = new JButton("SỬA", icon2);
+        btnSua = new JButton("Cập nhật", icon2);
         btnSua.setForeground(Color.BLUE);
         btnSua.setBounds(500, 405, 120, 25);
         btnSua.addActionListener(new ActionListener() {
@@ -302,7 +390,7 @@ public final class Daotao extends JInternalFrame {
         });
 
         ImageIcon icon3 = new ImageIcon("src\\image\\delete.png");
-        btnXoa = new JButton("XÓA", icon3);
+        btnXoa = new JButton("Xóa", icon3);
         btnXoa.setForeground(Color.BLUE);
         btnXoa.setBounds(640, 405, 120, 25);
         btnXoa.addActionListener(new ActionListener() {
@@ -313,7 +401,10 @@ public final class Daotao extends JInternalFrame {
                         "Confirm",
                         JOptionPane.YES_NO_OPTION);
                 if (result == JOptionPane.YES_OPTION) {
-
+                    if (txtMalop.getText().equals("")) {
+                        JOptionPane.showMessageDialog(d, "Vui lòng chọn lớp đào tạo bạn muốn xóa");
+                        return;
+                    }
                     if (daoTaoMgr.deleteDaoTaoByID(txtMalop.getText()) == true) {
                         JOptionPane.showMessageDialog(d, "Xóa thành công");
                         LamMoi();
@@ -332,7 +423,7 @@ public final class Daotao extends JInternalFrame {
         listLopDT.setModel(new DefaultTableModel(
                 new Object[][]{},
                 new String[]{
-                    "STT", "MÃ LỚP ĐÀO TẠO", "TÊN LỚP", "MÃ PHÒNG BAN", "TỪ NGÀY", "ĐẾN NGÀY", "DANH SÁCH", "GHI CHÚ"
+                    "Mã lớp", "Tên lớp", "Mã phòng ban", "Từ ngày", "Đến ngày", "Danh sách", "Ghi chú"
                 }
         ));
 
@@ -340,13 +431,13 @@ public final class Daotao extends JInternalFrame {
         scrollPane.setViewportView(listLopDT);
 
         JScrollPane scrollPane1 = new JScrollPane();
-        scrollPane1.setBounds(900, 55, 450, 350);
+        scrollPane1.setBounds(900, 15, 450, 430);
         contentPane.add(scrollPane1);
 
         listNhanVien = new JTable();
         listNhanVien.setModel(new MyTableModel());
 
-        listNhanVien.setBounds(900, 55, 450, 350);
+        listNhanVien.setBounds(900, 15, 450, 430);
         scrollPane1.setViewportView(listNhanVien);
         String role = LoggedRole.getLoggedRole();
         if (role.equals("Admin") || role.equals("SA")) {
@@ -379,9 +470,11 @@ public final class Daotao extends JInternalFrame {
             System.out.println(list.size() + " nè");
             if (!list.isEmpty()) {
                 for (DaoTao E : list) {
+
                     dTaoModel.addRow(new Object[]{
-                        E.getId(), E.getMaLop(), E.getTenLop(), E.getMaPhongBan(), E.getTuNgay(), E.getDenNgay(), E.getDanhSach(), E.getGhiChu()
+                        E.getMaLop(), E.getTenLop(), E.getMaPhongBan(), E.getTuNgay(), E.getDenNgay(), E.getDanhSach(), E.getGhiChu()
                     });
+
                 }
 
             }
@@ -395,13 +488,51 @@ public final class Daotao extends JInternalFrame {
                 int index = listLopDT.getSelectedRow();
                 if (index >= 0) {
                     txtMalop.setEditable(false);
-                    txtMalop.setText(listLopDT.getValueAt(index, 1).toString());
-                    txtTenLop.setText(listLopDT.getValueAt(index, 2).toString());
-                    txtTuNgay.setText(listLopDT.getValueAt(index, 4).toString());
-                    txtDenNgay.setText(listLopDT.getValueAt(index, 5).toString());
-                    areaDanhSach.setText(listLopDT.getValueAt(index, 6).toString());
-                    txtGhiChu.setText(listLopDT.getValueAt(index, 7).toString());
-                    cmbPhongBan.setSelectedItem(listLopDT.getValueAt(index, 3));
+                    txtMalop.setText(listLopDT.getValueAt(index, 0).toString());
+                    txtTenLop.setText(listLopDT.getValueAt(index, 1).toString());
+                    txtTuNgay.setText(listLopDT.getValueAt(index, 3).toString());
+                    txtDenNgay.setText(listLopDT.getValueAt(index, 4).toString());
+                    areaDanhSach.setText(listLopDT.getValueAt(index, 5).toString());
+                    txtGhiChu.setText(listLopDT.getValueAt(index, 6).toString());
+                    cmbPhongBan.setSelectedItem(listLopDT.getValueAt(index, 2));
+                }
+            }
+        });
+    }
+
+    private void loadTableDaoTao(List<DaoTao> list) {
+        dTaoModel.fireTableDataChanged();
+        dTaoModel = (DefaultTableModel) listLopDT.getModel();
+        dTaoModel.setRowCount(0);
+        try {
+            System.out.println(list.size() + " nè");
+            if (!list.isEmpty()) {
+                for (DaoTao E : list) {
+
+                    dTaoModel.addRow(new Object[]{
+                        E.getMaLop(), E.getTenLop(), E.getMaPhongBan(), E.getTuNgay(), E.getDenNgay(), E.getDanhSach(), E.getGhiChu()
+                    });
+
+                }
+
+            }
+            listLopDT.setModel(dTaoModel);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        listLopDT.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent lse) {
+                int index = listLopDT.getSelectedRow();
+                if (index >= 0) {
+                    txtMalop.setEditable(false);
+                    txtMalop.setText(listLopDT.getValueAt(index, 0).toString());
+                    txtTenLop.setText(listLopDT.getValueAt(index, 1).toString());
+                    txtTuNgay.setText(listLopDT.getValueAt(index, 3).toString());
+                    txtDenNgay.setText(listLopDT.getValueAt(index, 4).toString());
+                    areaDanhSach.setText(listLopDT.getValueAt(index, 5).toString());
+                    txtGhiChu.setText(listLopDT.getValueAt(index, 6).toString());
+                    cmbPhongBan.setSelectedItem(listLopDT.getValueAt(index, 2));
                 }
             }
         });
@@ -477,15 +608,35 @@ public final class Daotao extends JInternalFrame {
             txtMalop.requestFocus();
             return false;
         }
+        if (txtMalop.getText().length() > 10) {
+            errMsg.setText("Độ dài mã lớp không hợp lệ (<= 10 kí tự)");
+            txtMalop.requestFocus();
+            return false;
+        }
 
         if (txtTenLop.getText().equals("")) {
             errMsg.setText("Không để trống tên lớp");
             txtTenLop.requestFocus();
             return false;
         }
+        if (txtTenLop.getText().length() > 50) {
+            errMsg.setText("Độ dài tên lớp không hợp lệ (<=50 kí tự)");
+            txtTenLop.requestFocus();
+            return false;
+        }
         if (cmbPhongBan.getSelectedIndex() == 0) {
             errMsg.setText("Vui lòng chọn phòng ban");
             cmbPhongBan.requestFocus();
+            return false;
+        }
+        if (txtTuNgay.getText().equals("")) {
+            errMsg.setText("Không để trống từ ngày");
+            txtTuNgay.requestFocus();
+            return false;
+        }
+        if (txtDenNgay.getText().equals("")) {
+            errMsg.setText("Không để trống đến ngày");
+            txtDenNgay.requestFocus();
             return false;
         }
         boolean isDate = false;
@@ -507,6 +658,7 @@ public final class Daotao extends JInternalFrame {
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
         Date tuNgay = null;
         Date denNgay = null;
+        Date now = new Date();
         try {
             tuNgay = format.parse(date1);
             denNgay = format.parse(date2);
@@ -516,7 +668,7 @@ public final class Daotao extends JInternalFrame {
         boolean before = tuNgay.before(denNgay);
         if (before == false) {
             errMsg.setText("Từ ngày phải trước đến ngày");
-            txtTuNgay.requestFocus();
+            txtDenNgay.requestFocus();
             return before;
         }
         errMsg.setText("");

@@ -1,7 +1,8 @@
 package View;
 
+import Controller.LoginMgr;
 import entities.LoggedRole;
-import entities.SqlUI;
+import entities.Config;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -12,7 +13,12 @@ import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyVetoException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.Box;
 import javax.swing.GroupLayout;
@@ -38,7 +44,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.MenuEvent;
 import javax.swing.event.MenuListener;
 
-public class MainTheme extends JFrame implements Runnable {
+public final class MainTheme extends JFrame implements Runnable {
 
     private JButton btn1, btn2, btn3, btn4, btn5;
     private JMenuItem menuTChu, menuNSu, menuDGia, menuDtao, menuTDung, menuTKe, jMenu6, jMenu7, jMenu8;
@@ -51,6 +57,9 @@ public class MainTheme extends JFrame implements Runnable {
     JMenuBar jMenuBar;
     private JLabel lblTime;
     boolean DTao = false, TDung = false, DGia = false, NSu = false, TKe = false;
+    LoginMgr loginMgr = new LoginMgr();
+
+    JDesktopPane jDesktopPane;
 
     public MainTheme() {
         initView();
@@ -64,14 +73,14 @@ public class MainTheme extends JFrame implements Runnable {
         thread.start();
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setVisible(true);
-
+        checkConfig();
     }
 
     private void initView() {
 
         jMenuBar = new JMenuBar();
         jMenuBar.setSize(50, 450);
-        JDesktopPane jDesktopPane = new JDesktopPane() {
+        jDesktopPane = new JDesktopPane() {
             ImageIcon icon = new ImageIcon("src\\image\\nen.jpg");
 
             public void paintComponent(Graphics g) {
@@ -348,12 +357,6 @@ public class MainTheme extends JFrame implements Runnable {
             @Override
             public void actionPerformed(ActionEvent ae) {
 
-                sqlUI sqlUI = new sqlUI();
-                sqlUI.setSize(550, 350);
-                sqlUI.setLocation(200, 100);
-
-                sqlUI.setVisible(true);
-                jDesktopPane.add(sqlUI);
             }
         });
 
@@ -364,17 +367,12 @@ public class MainTheme extends JFrame implements Runnable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // TODO Auto-generated method stub
-                if(SqlUI.getUserName()==null||SqlUI.getUserName().equals("")){
-                    JOptionPane.showMessageDialog(btn1, "Vui lòng kết nối database trước khi đăng nhập");
-                    return;
-                }
+//
                 Login login = new Login();
                 login.setSize(550, 350);
                 login.setLocation(200, 100);
-
                 login.setVisible(true);
                 jDesktopPane.add(login);
-
             }
         });
         JButton btn6 = new JButton(
@@ -432,7 +430,7 @@ public class MainTheme extends JFrame implements Runnable {
         window.setBounds(500, 150, 400, 300);
         window.setVisible(true);
         try {
-            Thread.sleep(5000);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -460,4 +458,33 @@ public class MainTheme extends JFrame implements Runnable {
             }
         }
     }
+
+    public void checkConfig() {
+        if (loginMgr.checkConfig()) {
+            Config config = loginMgr.getConnfig();
+            if (loginMgr.checkDataBase(config.getUrl(), config.getUserName(), config.getPassword()) == true) {
+                Login login = new Login();
+                login.setSize(550, 350);
+                login.setLocation(200, 100);
+                login.setVisible(true);
+                jDesktopPane.add(login);
+            }
+        } else {
+            try {
+                File file = new File("src\\config.txt");
+                file.delete();
+                System.out.println("Xóa file config lỗi"+file.getName());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            
+            
+            SqlUI sqlUI = new SqlUI();
+            sqlUI.setSize(560, 420);
+            sqlUI.setLocation(400, 200);
+            sqlUI.setVisible(true);
+            jDesktopPane.add(sqlUI);
+        }
+    }
+
 }

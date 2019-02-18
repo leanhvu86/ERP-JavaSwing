@@ -15,7 +15,7 @@ import javax.swing.table.DefaultTableModel;
 public class MyTableModel extends DefaultTableModel {
 
     public MyTableModel() {
-        super(new String[]{"MÃ NHÂN VIÊN", "TÊN NHÂN VIÊN", "ĐÀO TẠO"}, 0);
+        super(new String[]{"Mã nhân viên", "Tên nhân viên", "Đào tạo"}, 0);
     }
 
     @Override

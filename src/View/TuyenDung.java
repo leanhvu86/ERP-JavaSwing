@@ -5,7 +5,8 @@
  */
 package View;
 
-import entities.SqlUI;
+import Controller.LoginMgr;
+import entities.Config;
 import entities.Tuyendung;
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -15,6 +16,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import static java.nio.file.LinkOption.NOFOLLOW_LINKS;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import static java.nio.file.StandardCopyOption.COPY_ATTRIBUTES;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -38,6 +47,7 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -63,18 +73,20 @@ public class TuyenDung extends JInternalFrame {
     int index = -1;
     private Connection con;
     String img = null;
-    SqlUI sqlUI = new SqlUI();
-    private String serverName = sqlUI.getServerName();
-    private String username = sqlUI.getUserName();
-    private String password = sqlUI.getPassword();
+    LoginMgr loginMgr = new LoginMgr();
+    Config config = loginMgr.getConnfig();
+    private final String username = config.getUserName();
+    private final String password = config.getPassword();
+    private final String url = config.getUrl();
 
     public TuyenDung() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager;user="+username+";password="+password+"");
+            con = DriverManager.getConnection(url, username, password);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         TD_GUI();
         fillTable();
         list_TD = getListTD();
@@ -105,28 +117,97 @@ public class TuyenDung extends JInternalFrame {
     }
 
     private boolean check() {
-        if (txt_hoten.getText().equals("") || txt_ngaysinh.getText().equals("") || txt_noisinh.getText().equals("")
-                || txt_sdt.getText().equals("") || txt_email.getText().equals("") || txt_cmnd.getText().equals("")
-                || txt_vitri.getText().equals("") || txt_ngonngu.getText().equals("") || txt_id.getText().equals("")) {
-            JOptionPane.showMessageDialog(null, "Không được bỏ trống dữ liệu");
+        // Check d? li?u textbox ID
+        if (txt_id.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "ID không được để trống.\nVui lòng nhập ID");
+            txt_id.requestFocus();
             return false;
-        } else if (!(txt_email.getText()).matches("^[\\w]+@+[\\w]+.+[\\w]")) {
-            JOptionPane.showMessageDialog(null, "Sai định dạng Email.\nHãy nhập lại.");
-            txt_email.setText("");
+        } else if (!txt_id.getText().matches("NV\\d{3}")) {
+            JOptionPane.showMessageDialog(null, "ID phải có định dạng [NVxxx].\nVui lòng nhập lại ID");
+            txt_id.setText("");
+            txt_id.requestFocus();
             return false;
-        } else if (!(txt_sdt.getText()).matches("^\\d{10}$")) {
-            JOptionPane.showMessageDialog(null, "Sai định dạng số điện thoại.\nHãy nhập lại");
-            txt_sdt.setText("");
-            return false;
-        } else if (!(txt_cmnd.getText()).matches("^\\d{12}$")) {
-            JOptionPane.showMessageDialog(null, "Sai định dạng số thẻ căn cước.\nPhải có 12 số. Hãy nhập lại");
-            txt_cmnd.setText("");
-            return false;
-        } else if (img == null) {
-            JOptionPane.showMessageDialog(null, "Không để trống ảnh.\nClick vào chữ ảnh để chọn ảnh");
+        } else if (!txt_id.getText().matches("\\w+")) {
+            JOptionPane.showMessageDialog(null, "ID phải có định dạng [NVxxx].\nVui lòng nhập lại ID");
+            txt_id.setText("");
+            txt_id.requestFocus();
             return false;
         }
+        // Check d? li?u textbox H? và tên
+        if (txt_hoten.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Họ và tên không được để trống.\nVui lòng nhập Họ và tên");
+            txt_hoten.requestFocus();
+            return false;
 
+        }
+        // Check d? li?u Ngày sinh
+        if (txt_ngaysinh.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Ngày sinh không được để trống.\nVui lòng nhập Ngày sinh");
+            txt_ngaysinh.requestFocus();
+            return false;
+        } else if (!txt_ngaysinh.getText().matches("\\d{1,2}-\\d{1,2}-\\d{4}")) {
+            JOptionPane.showMessageDialog(null, "Không đúng định dạng ngày, tháng, nam [dd/mm/yyyy].\nVui lòng nhập lại Ngày sinh");
+            txt_ngaysinh.requestFocus();
+            txt_ngaysinh.setText("");
+            return false;
+        }
+        //Check d? li?u Ð?a ch?
+        if (txt_noisinh.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Ðịa chỉ không được để trống.\nVui lòng nhập địa chỉ");
+            txt_noisinh.requestFocus();
+            return false;
+        }
+        // Check d? li?u SÐT
+        if (txt_sdt.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Số điện thoại không được để trống.\nVui lòng ập số ÐT");
+            txt_sdt.requestFocus();
+            return false;
+        } else if (!(txt_sdt.getText()).matches("^0\\d{9}$")) {
+            JOptionPane.showMessageDialog(null, "Không đúng định dạng số ÐT [0xxxxxxxxx].\n Vui lòng nhập lại số ÐT");
+            txt_sdt.setText("");
+            txt_sdt.requestFocus();
+            return false;
+        }
+        // Check d? li?u Email
+        if (txt_email.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Email không được để trống.\nVui lòng nhập Email");
+            txt_email.requestFocus();
+            return false;
+        } else if (!txt_email.getText().matches("\\w+@\\w+[.]\\w+([.]\\w+)?")) {
+            JOptionPane.showMessageDialog(null, "Không dúng dịnh dạng Email.\nVui lòng nhập lại Email");
+            txt_email.setText("");
+            txt_email.requestFocus();
+            return false;
+        }
+        // Check d? li?u Th? CC
+        if (txt_cmnd.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Thẻ căn cuớc không đuợc bỏ trống.\nVui lòng nhập Thẻ CC");
+            txt_cmnd.requestFocus();
+            return false;
+        } else if (!(txt_cmnd.getText()).matches("^\\d{12}$")) {
+            JOptionPane.showMessageDialog(null, "Sai định dạng thẻ căn cước.\nThẻ căn cuớc phải có 12 số.\nVui lòng nhập lại Thẻ CC");
+            txt_cmnd.setText("");
+            txt_cmnd.requestFocus();
+            return false;
+        }
+        // Check d? li?u V? trí UT
+        if (txt_vitri.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Vị trí ứng tuyển không được để trống.\nVui lòng nhập Vị trí ứng tuyển");
+            txt_vitri.requestFocus();
+            return false;
+
+        }
+        // Check d? li?u Ngo?i ng?
+        if (txt_ngonngu.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Ngọai ngữ không được để trống.\nVui lòng nhập Ngoại ngữ");
+            txt_ngonngu.requestFocus();
+            return false;
+
+        }
+        if (img == null) {
+            JOptionPane.showMessageDialog(null, "Không để trống ảnh.\nClick vào chỗ ảnh để chọn ảnh");
+            return false;
+        }
         return true;
     }
 
@@ -301,7 +382,7 @@ public class TuyenDung extends JInternalFrame {
             try {
                 Tuyendung td = new Tuyendung();
                 Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-                con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager;user="+username+";password="+password+"");
+                con = DriverManager.getConnection(url, username, password);
                 String sql = "insert into Tuyendung values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
                 PreparedStatement st = con.prepareStatement(sql);
                 st.setString(1, txt_id.getText());
@@ -338,46 +419,22 @@ public class TuyenDung extends JInternalFrame {
                 st.executeUpdate();
 
                 list_TD = getListTD();
-                JOptionPane.showMessageDialog(null, "Đã thêm ứng viên thành công");
+                JOptionPane.showMessageDialog(null, "Ðã thêm ứng viên thành công");
                 fillTable();
                 loadDbToTable();
                 clear();
-
+                upImage(img);
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(null, e);
-                return;
+                JOptionPane.showMessageDialog(null, "ID đã tồn tại. Vui lòng nhập lại ID");
+                txt_id.requestFocus();
 
+                e.printStackTrace();
             }
         }
     }
 
-//      private void Timkiem() {
-//
-//        if (txt_timma.getText().equals("")) {
-//            JOptionPane.showMessageDialog(null, "Nhập mã sinh viên cần tìm");
-//            return;
-//        } else {
-//            int count = 0;
-//            for (Diem_SV diem : list_diem) {
-//                if (txt_timma.getText().equalsIgnoreCase(diem.getMasv())) {
-//                    txt_masv.setText(diem.getMasv());
-//                    lbl_ten.setText(diem.getHoten());
-//                    txt_tienganh.setText(Double.toString(diem.getTa()));
-//                    txt_tinhoc.setText(Double.toString(diem.getTin()));
-//                    txt_gdtc.setText(Double.toString(diem.getGdtc()));
-//                    lbl_diem.setText(Double.toString(diem.getDiemtb()));
-//                    count++;
-//                    JOptionPane.showMessageDialog(txt_masv, "Đã tìm thấy mã sinh viên.\nThông tin như sau");
-//                }
-//            }
-//            if (count == 0) {
-//                JOptionPane.showMessageDialog(null, "Mã sinh viên không tồn tại");
-//            }
-//
-//        }
-//    }
     private void capnhat() {
-        if (txt_hoten.getText().equals("")) {
+        if (txt_id.getText().equals("")) {
             JOptionPane.showMessageDialog(null, "Chọn ứng viên cần cập nhật");
             return;
         } else {
@@ -385,7 +442,7 @@ public class TuyenDung extends JInternalFrame {
                 try {
                     Tuyendung td = new Tuyendung();
                     Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-                    con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager;user="+username+";password="+password+"");
+                    con = DriverManager.getConnection(url, username, password);
                     String sql = "update Tuyendung set hoten=?,ngaysinh=?,gioitinh=?,noisinh=?,sdt=?,email=?,cmnd=?,trinhdo=?, "
                             + "totnghiep=?, vitri=?,chuyennganh=?,ngonngu=?,"
                             + "kinhnghiem=?, nam=?, dot=?, anh=? where MaUngVien =?";
@@ -396,7 +453,7 @@ public class TuyenDung extends JInternalFrame {
                     if (ra_nam.isSelected()) {
                         gt = "Nam";
                     } else {
-                        gt = "Nữ";
+                        gt = "N?";
                     }
                     st.setString(3, gt);
                     st.setString(4, txt_noisinh.getText());
@@ -415,27 +472,28 @@ public class TuyenDung extends JInternalFrame {
                         kn = "Không";
                     }
                     st.setString(13, kn);
-                    st.setString(14, img);
-                    st.setString(15, (String) cbb_nam2.getSelectedItem());
-                    st.setString(16, (String) cbb_dot2.getSelectedItem());
+                    st.setString(14, (String) cbb_nam2.getSelectedItem());
+                    st.setString(15, (String) cbb_dot2.getSelectedItem());
+                    st.setString(16, img);
                     st.setString(17, txt_id.getText());
                     st.executeUpdate();
                     list_TD = getListTD();
-                    JOptionPane.showMessageDialog(null, "Đã cập nhật thành công");
+                    JOptionPane.showMessageDialog(null, "Ðã cập nhật thành công");
                     fillTable();
                     loadDbToTable();
-
+                    upImage(img);
                 } catch (Exception e) {
                     System.out.println(e);
 
                 }
-            }
-        }
 
+            }
+
+        }
     }
 
     public void TD_GUI() {
-        setBounds(0, 0, 1400, 650);
+        setBounds(0, 0, 1350, 650);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         getContentPane().setLayout(null);
 
@@ -445,7 +503,7 @@ public class TuyenDung extends JInternalFrame {
         panel1.setLayout(null);
         add(panel1);
 
-        lbl_nam1 = new JLabel("Năm");
+        lbl_nam1 = new JLabel("Nam");
         lbl_nam1.setBounds(40, 30, 50, 25);
         lbl_nam1.setFont(new Font("Tahoma", Font.BOLD, 13));
         panel1.add(lbl_nam1);
@@ -455,17 +513,17 @@ public class TuyenDung extends JInternalFrame {
         cbb_nam1.setFont(new Font("Tahoma", Font.PLAIN, 13));
         panel1.add(cbb_nam1);
 
-        lbl_dot1 = new JLabel("Đợt xét tuyển");
+        lbl_dot1 = new JLabel("Ðợt xét tuyển");
         lbl_dot1.setBounds(170, 30, 150, 25);
         lbl_dot1.setFont(new Font("Tahoma", Font.BOLD, 13));
         panel1.add(lbl_dot1);
 
-        cbb_dot1 = new JComboBox(new String[]{"Đợt I", "Đợt II", "Đợt III", "Đợt IV"});
+        cbb_dot1 = new JComboBox(new String[]{"Ðợt I", "Ðợt II", "Ðợt III", "Ðợt IV"});
         cbb_dot1.setBounds(280, 30, 70, 25);
         cbb_dot1.setFont(new Font("Tahoma", Font.PLAIN, 13));
         panel1.add(cbb_dot1);
 
-        cbb_chuyennganh2 = new JComboBox(new String[]{"Công nghệ thông tin", "Tài chính Kế toán", "Thiết bị di động", "Quản trị nhân lực"});
+        cbb_chuyennganh2 = new JComboBox(new String[]{"Công nghề thông tin", "Tài chính Kế toán", "Thiết bị di động", "Quản trị nhân lực"});
         cbb_chuyennganh2.setBounds(520, 30, 250, 25);
         cbb_chuyennganh2.setFont(new Font("Tahoma", Font.PLAIN, 13));
         panel1.add(cbb_chuyennganh2);
@@ -541,7 +599,7 @@ public class TuyenDung extends JInternalFrame {
             }
         });
 
-        lbl_noisinh = new JLabel("Địa chỉ");
+        lbl_noisinh = new JLabel("Ðịa chỉ");
         lbl_noisinh.setBounds(20, 170, 100, 25);
         lbl_noisinh.setFont(new Font("Tahoma", Font.BOLD, 13));
         panel2.add(lbl_noisinh);
@@ -550,7 +608,7 @@ public class TuyenDung extends JInternalFrame {
         txt_noisinh.setBounds(100, 170, 250, 25);
         panel2.add(txt_noisinh);
 
-        lbl_sdt = new JLabel("Số ĐT");
+        lbl_sdt = new JLabel("Số ÐT");
         lbl_sdt.setBounds(20, 205, 100, 25);
         lbl_sdt.setFont(new Font("Tahoma", Font.BOLD, 13));
         panel2.add(lbl_sdt);
@@ -582,7 +640,7 @@ public class TuyenDung extends JInternalFrame {
         lbl_trinhdo.setFont(new Font("Tahoma", Font.BOLD, 13));
         panel2.add(lbl_trinhdo);
 
-        cbb_trinhdo = new JComboBox(new String[]{"Đại Học", "Cao Đẳng", "Trung Cấp"});
+        cbb_trinhdo = new JComboBox(new String[]{"Ðại Học", "Cao Dẳng", "Trung Cấp"});
         cbb_trinhdo.setBounds(520, 65, 250, 25);
         cbb_trinhdo.setFont(new Font("Tahoma", Font.PLAIN, 13));
         panel2.add(cbb_trinhdo);
@@ -597,7 +655,7 @@ public class TuyenDung extends JInternalFrame {
         cbb_totnghiep.setFont(new Font("Tahoma", Font.PLAIN, 13));
         panel2.add(cbb_totnghiep);
 
-        lbl_vitri = new JLabel("Vị trí ƯT");
+        lbl_vitri = new JLabel("Vị trí UT");
         lbl_vitri.setBounds(400, 135, 100, 25);
         lbl_vitri.setFont(new Font("Tahoma", Font.BOLD, 13));
         panel2.add(lbl_vitri);
@@ -611,12 +669,12 @@ public class TuyenDung extends JInternalFrame {
         lbl_chuyennganh.setFont(new Font("Tahoma", Font.BOLD, 13));
         panel2.add(lbl_chuyennganh);
 
-        cbb_chuyennganh = new JComboBox(new String[]{"Công nghệ thông tin", "Tài chính Kế toán", "Thiết bị di động", "Quản trị nhân lực"});
+        cbb_chuyennganh = new JComboBox(new String[]{"Công nghệ thông tin", "Tài chính Kế toán", "Thiết bị di dộng", "Quản trị nhân lực"});
         cbb_chuyennganh.setBounds(520, 170, 250, 25);
         cbb_chuyennganh.setFont(new Font("Tahoma", Font.PLAIN, 13));
         panel2.add(cbb_chuyennganh);
 
-        lbl_ngonngu = new JLabel("Ngôn ngữ");
+        lbl_ngonngu = new JLabel("Ngoọai ngữ");
         lbl_ngonngu.setBounds(400, 205, 100, 25);
         lbl_ngonngu.setFont(new Font("Tahoma", Font.BOLD, 13));
         panel2.add(lbl_ngonngu);
@@ -652,9 +710,9 @@ public class TuyenDung extends JInternalFrame {
             }
         });
 
-        ImageIcon moi = new ImageIcon("src//image//save.png");
+        ImageIcon moi = new ImageIcon("src//image//them.png");
         btn_themmoi = new JButton("Làm mới", moi);
-        btn_themmoi.setBounds(20, 30, 120, 30);
+        btn_themmoi.setBounds(20, 20, 120, 30);
         btn_themmoi.setForeground(Color.blue);
         panel3.add(btn_themmoi);
         btn_themmoi.addActionListener(new ActionListener() {
@@ -667,7 +725,7 @@ public class TuyenDung extends JInternalFrame {
 
         ImageIcon add = new ImageIcon("src//image//save.png");
         btn_add = new JButton("Thêm", add);
-        btn_add.setBounds(20, 90, 120, 30);
+        btn_add.setBounds(20, 70, 120, 30);
         btn_add.setForeground(Color.blue);
         panel3.add(btn_add);
         btn_add.addActionListener(new ActionListener() {
@@ -679,7 +737,7 @@ public class TuyenDung extends JInternalFrame {
 
         ImageIcon sua = new ImageIcon("src//image//edit.png");
         btn_sua = new JButton("Cập nhật", sua);
-        btn_sua.setBounds(20, 150, 120, 30);
+        btn_sua.setBounds(20, 120, 120, 30);
         btn_sua.setForeground(Color.blue);
         panel3.add(btn_sua);
         btn_sua.addActionListener(new ActionListener() {
@@ -691,7 +749,7 @@ public class TuyenDung extends JInternalFrame {
 
         ImageIcon xoa = new ImageIcon("src//image//delete.png");
         btn_xoa = new JButton("Xóa", xoa);
-        btn_xoa.setBounds(20, 210, 120, 30);
+        btn_xoa.setBounds(20, 170, 120, 30);
         btn_xoa.setForeground(Color.blue);
         panel3.add(btn_xoa);
         btn_xoa.addActionListener(new ActionListener() {
@@ -699,7 +757,7 @@ public class TuyenDung extends JInternalFrame {
             public void actionPerformed(ActionEvent ae) {
                 index = tbl_tuyendung.getSelectedRow();
                 if (index == -1) {
-                    JOptionPane.showMessageDialog(null, "Chọn ứng viên cần xóa");
+                    JOptionPane.showMessageDialog(null, "Chọn ứng viền cần xóa");
                     return;
                 } else {
                     int chon = JOptionPane.showConfirmDialog(null, "Bạn có muốn xóa không?", "Thông báo", JOptionPane.YES_NO_OPTION);
@@ -709,7 +767,7 @@ public class TuyenDung extends JInternalFrame {
                         fillTable();
                         loadDbToTable();
                         clear();
-                        JOptionPane.showMessageDialog(null, "Đã xóa thành công");
+                        JOptionPane.showMessageDialog(null, "Ðã xóa thành công");
                     } else if (chon == JOptionPane.NO_OPTION) {
                         return;
                     } else {
@@ -717,6 +775,18 @@ public class TuyenDung extends JInternalFrame {
                     }
                 }
 
+            }
+        });
+
+        ImageIcon duyet = new ImageIcon("src//image//duyet.png");
+        btn_duyet = new JButton("Duyệt", duyet);
+        btn_duyet.setBounds(20, 220, 120, 30);
+        btn_duyet.setForeground(Color.blue);
+        panel3.add(btn_duyet);
+        btn_duyet.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                duyet();
             }
         });
 
@@ -771,30 +841,48 @@ public class TuyenDung extends JInternalFrame {
         });
 
         JScrollPane sc = new JScrollPane();
-        sc.setBounds(20, 450, 1250, 150);
+        sc.setBounds(20, 450, 1300, 150);
         getContentPane().add(sc);
 
         tbl_tuyendung = new JTable();
         tbl_tuyendung.setModel(new DefaultTableModel(new Object[][]{}, new String[]{"ID", "Họ và tên",
-            "Ngày sinh", "Giới tính", "Địa chỉ", "Số ĐT", "Email", "Thẻ CC",
-            "Trình độ", "Tốt nghiệp", "Vị trí ƯT", "Chuyên ngành", "Ngôn ngữ", "Kinh nghiệm", "Năm", "Đợt XT", "Ảnh"}));
+            "Ngày sinh", "Giớii tính", "Ðịa chỉ", "Số ÐT", "Email", "Thẻ CC",
+            "Trình độ", "Tốt nghiệp", "Vị trí UT", "Chuyên ngành", "Ngôn ngữ", "Kinh nghiệm", "Năm", "Ðợt XT", "Ảnh"}));
         sc.setViewportView(tbl_tuyendung);
 
-        btn_anh = new JButton("CHỌN ẢNH");
+        btn_anh = new JButton("Chọn ảnh");
         btn_anh.setBounds(50, 30, 180, 230);
         add(btn_anh);
         btn_anh.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent me) {
-                JFileChooser file = new JFileChooser("src\\image\\CV\\");
-                int kq = file.showOpenDialog(file);
-                if (kq == JFileChooser.APPROVE_OPTION) {
-                    img = file.getSelectedFile().getName();
+                JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+                int returnValue = jfc.showOpenDialog(null);
+                if (returnValue == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = jfc.getSelectedFile();
+                    System.out.println(selectedFile.getAbsolutePath());
+                    // lấy tên file
+                    img = selectedFile.getAbsolutePath().substring(selectedFile.getAbsolutePath().lastIndexOf("\\") + 1);
+                    // lấy đường dẫn thư mục trong máy tính để copy file từ đây
+                    String path = selectedFile.getParent();
+                    // đường dẫn copy file từ folder nào với tên file là img
+                    Path copy_from_1 = Paths.get(path, img);
+                    // đường dẫn copy file đến folder, tên file
+                    Path copy_to_1 = Paths.get("src\\image\\CV\\", copy_from_1
+                            .getFileName().toString());
+                    System.out.println(img);
+                    System.out.println(path);
+                    try {
+                        Files.copy(copy_from_1, copy_to_1, REPLACE_EXISTING, COPY_ATTRIBUTES,
+                                NOFOLLOW_LINKS);
+                    } catch (IOException e) {
+                        System.err.println(e);
+                    }
+                    // nhớ load ảnh sau khi thay đổi tên file nhé.
                     upImage(img);
                 } else {
-                    JOptionPane.showMessageDialog(null, "Hãy chọn ảnh của ứng viên");
+                    JOptionPane.showMessageDialog(null, "Hãy chọn ảnh ứng viên");
                 }
-
             }
 
         });
@@ -805,7 +893,7 @@ public class TuyenDung extends JInternalFrame {
         panel4.setLayout(null);
         add(panel4);
 
-        lbl_nam2 = new JLabel("Năm");
+        lbl_nam2 = new JLabel("Nam");
         lbl_nam2.setBounds(20, 35, 50, 25);
         lbl_nam2.setFont(new Font("Tahoma", Font.BOLD, 13));
         panel4.add(lbl_nam2);
@@ -815,12 +903,12 @@ public class TuyenDung extends JInternalFrame {
         cbb_nam2.setFont(new Font("Tahoma", Font.PLAIN, 13));
         panel4.add(cbb_nam2);
 
-        lbl_dot2 = new JLabel("Đợt XT");
+        lbl_dot2 = new JLabel("Ðợt XT");
         lbl_dot2.setBounds(20, 70, 150, 25);
         lbl_dot2.setFont(new Font("Tahoma", Font.BOLD, 13));
         panel4.add(lbl_dot2);
 
-        cbb_dot2 = new JComboBox(new String[]{"Đợt I", "Đợt II", "Đợt III", "Đợt IV"});
+        cbb_dot2 = new JComboBox(new String[]{"Ðợt I", "Ðợt II", "Ðợt III", "Ðợt IV"});
         cbb_dot2.setBounds(80, 70, 70, 25);
         cbb_dot2.setFont(new Font("Tahoma", Font.PLAIN, 13));
         panel4.add(cbb_dot2);
@@ -858,13 +946,13 @@ public class TuyenDung extends JInternalFrame {
             } else {
                 index++;
                 if (index >= list_TD.size()) {
-                    JOptionPane.showMessageDialog(null, "Đang ở cuối danh sách");
+                    JOptionPane.showMessageDialog(null, "Ðang ở cuối danh sách");
                     return;
                 }
                 Display();
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Đang ở cuối danh sách");
+            JOptionPane.showMessageDialog(null, "Ðang ở cuối danh sách");
             return;
         }
     }
@@ -876,14 +964,14 @@ public class TuyenDung extends JInternalFrame {
 
             index = list_TD.size() - 1;
             Display();
-            JOptionPane.showMessageDialog(null, "Bạn đang ở cuối danh sách");
+            JOptionPane.showMessageDialog(null, "Bạn Ðang ở cuối danh sách");
         }
     }
 
 //    private void Timkiem() {
 //                
 //                if (txt_timkiem.getText().equals("")) {
-//                    JOptionPane.showMessageDialog(null,"Nhập mã sinh viên cần tìm");
+//                    JOptionPane.showMessageDialog(null,"Nh?p mã sinh viên c?n tìm");
 //                    return;
 //                } else {
 //                    int count = 0;
@@ -900,11 +988,11 @@ public class TuyenDung extends JInternalFrame {
 //                                ra_nu.setSelected(true);
 //                            }
 //                            count++;
-//                            JOptionPane.showMessageDialog(txt_masv, "Đã tìm thấy mã sinh viên.\nThông tin như sau");
+//                            JOptionPane.showMessageDialog(txt_masv, "Ðã tìm th?y mã sinh viên.\nThông tin nhu sau");
 //                        }
 //                    }
 //                    if (count == 0) {
-//                        JOptionPane.showMessageDialog(null,"Mã sinh viên không tồn tại");
+//                        JOptionPane.showMessageDialog(null,"Mã sinh viên không t?n t?i");
 //                    }
 //
 //                }
@@ -939,5 +1027,34 @@ public class TuyenDung extends JInternalFrame {
         cbb_nam2.setSelectedItem(td.getNam());
         cbb_dot2.setSelectedItem(td.getDot());
         tbl_tuyendung.setRowSelectionInterval(index, index);
+    }
+
+    public void duyet() {
+//        try {
+//            Tuyendung sv = new Tuyendung();
+//            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+//            con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=Employee;user=sa;password=luong123");
+//            
+//            String sql2 = "insert into DIEM (masv,tienganh,tinhoc,gdtc) values \n"
+//                    + "(?,?,?,?)";
+//            PreparedStatement st2 = con.prepareStatement(sql2);
+//            st2.setString(1, txt_masv.getText());
+//            st2.setDouble(2, 0);
+//            st2.setDouble(3, 0);
+//            st2.setDouble(4, 0);
+//            st2.executeUpdate();
+//
+//            JOptionPane.showMessageDialog(null, "Luu thành công");
+//            fillTable();
+//            list_sinhvien = getListStudent();
+//            loadDbToTable();
+//
+//        } catch (Exception e) {
+//            JOptionPane.showMessageDialog(null, "Không d? trùng mã sinh viên");
+//            clear();
+//            return;
+//
+//        }
+
     }
 }

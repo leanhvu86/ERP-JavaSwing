@@ -5,9 +5,10 @@
  */
 package DAO;
 
+import Controller.LoginMgr;
 import entities.Danhgia;
 import entities.NhanVien;
-import entities.SqlUI;
+import entities.Config;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -22,9 +23,11 @@ import java.util.List;
  */
 public class DanhGiaDAOImpl implements DanhGiaDAO {
 
-    SqlUI sqlUI = new SqlUI();
-    private String username = sqlUI.getUserName();
-    private String password = sqlUI.getPassword();
+    LoginMgr loginMgr = new LoginMgr();
+    Config config = loginMgr.getConnfig();
+    private final String username = config.getUserName();
+    private final String password = config.getPassword();
+    private final String url = config.getUrl();
 
     public List<Danhgia> getListDanhGia(String maNhanVien) {
         List<Danhgia> list = new ArrayList<>();

@@ -21,4 +21,5 @@ public interface DaoTaoDAO {
     public boolean getDaoTaoById(String maLop);
     public List<DaoTao> getListDaoTao();
     public boolean deleteDaoTaoByID(String maLop);
+    public List<DaoTao> getListDaoTaoByFilter(String malop,String maPhongBan,String tuNgay,String denNgay);
 }
