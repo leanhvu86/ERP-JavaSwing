@@ -15,11 +15,54 @@ import java.util.List;
  * @author Win
  */
 public interface DaoTaoDAO {
+
+    /**
+     *
+     * @return
+     */
     public List<PhongBan> getListPhongBan();
+
+    /**
+     *
+     * @param maPhongBan
+     * @return
+     */
     public List<NhanVien> getListNhanVien(String maPhongBan);
+
+    /**
+     *
+     * @param daoTao
+     * @return
+     */
     public boolean saveDaoTao(DaoTao daoTao);
+
+    /**
+     *
+     * @param maLop
+     * @return
+     */
     public boolean getDaoTaoById(String maLop);
+
+    /**
+     *
+     * @return
+     */
     public List<DaoTao> getListDaoTao();
+
+    /**
+     *
+     * @param maLop
+     * @return
+     */
     public boolean deleteDaoTaoByID(String maLop);
-    public List<DaoTao> getListDaoTaoByFilter(String malop,String maPhongBan,String tuNgay,String denNgay);
+
+    /**
+     *
+     * @param malop
+     * @param maPhongBan
+     * @param tuNgay
+     * @param denNgay
+     * @return
+     */
+    public List<DaoTao> getListDaoTaoByFilter(String malop, String maPhongBan, String tuNgay, String denNgay);
 }

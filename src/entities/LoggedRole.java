@@ -1,10 +1,8 @@
 package entities;
 
-import View.MainTheme;
-
 public class LoggedRole {
 
-    static String loggedRole;
+    static String loggedRole, username;
 
     public LoggedRole() {
     }
@@ -15,5 +13,13 @@ public class LoggedRole {
 
     public static void setLoggedRole(String loggedRole) {
         LoggedRole.loggedRole = loggedRole;
+    }
+
+    public static String getUsername() {
+        return username;
+    }
+
+    public static void setUsername(String username) {
+        LoggedRole.username = username;
     }
 }

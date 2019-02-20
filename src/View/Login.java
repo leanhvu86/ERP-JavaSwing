@@ -7,8 +7,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -19,7 +17,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 
 import Controller.LoginMgr;
-import entities.Config;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 

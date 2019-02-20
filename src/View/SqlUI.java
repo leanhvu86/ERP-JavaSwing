@@ -7,8 +7,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JDesktopPane;
-import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -25,6 +23,7 @@ import java.awt.event.KeyEvent;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -98,11 +97,15 @@ public class SqlUI extends JInternalFrame {
                         config.setUserName(user);
                         config.setPassword(pass);
                         config.setUrl(url);
-                        if (loginMgr.checkDataBase(url, user, pass) == true) {
-                            setVisible(false);
-                            JOptionPane.showMessageDialog(null, "Đăng Nhập Thành Công!!");
-                        } else {
-                            JOptionPane.showMessageDialog(null, "Đăng Nhập Thất bại!! Vui lòng kiểm tra lại username và password");
+                        try {
+                            if (loginMgr.checkDataBase(url, user, pass) == true) {
+                                setVisible(false);
+                                JOptionPane.showMessageDialog(null, "Đăng Nhập Thành Công!!");
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Đăng Nhập Thất bại!! Vui lòng kiểm tra lại username và password");
+                            }
+                        } catch (SQLException ex) {
+                            Logger.getLogger(SqlUI.class.getName()).log(Level.SEVERE, null, ex);
                         }
 
                     }
@@ -149,16 +152,20 @@ public class SqlUI extends JInternalFrame {
                     sqlUI.setUserName(user);
                     sqlUI.setPassword(pass);
                     sqlUI.setUrl(url);
-                    if (loginMgr.checkDataBase(url, user, pass) == true) {
-                        setVisible(false);
-                        try {
-                            saveFileConfig(user, pass, url);
-                        } catch (IOException ex) {
-                            Logger.getLogger(SqlUI.class.getName()).log(Level.SEVERE, null, ex);
+                    try {
+                        if (loginMgr.checkDataBase(url, user, pass) == true) {
+                            setVisible(false);
+                            try {
+                                saveFileConfig(user, pass, url);
+                            } catch (IOException ex) {
+                                Logger.getLogger(SqlUI.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                            JOptionPane.showMessageDialog(null, "Kết nối Thành Công!!");
+                        } else {
+                            JOptionPane.showMessageDialog(null, "Kết nối Thất bại!! Vui lòng kiểm tra lại dữ liệu nhập");
                         }
-                        JOptionPane.showMessageDialog(null, "Kết nối Thành Công!!");
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Kết nối Thất bại!! Vui lòng kiểm tra lại dữ liệu nhập");
+                    } catch (SQLException ex) {
+                        Logger.getLogger(SqlUI.class.getName()).log(Level.SEVERE, null, ex);
                     }
 
                 }

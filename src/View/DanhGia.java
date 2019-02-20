@@ -6,39 +6,37 @@ import entities.Danhgia;
 import entities.LoggedRole;
 import entities.NhanVien;
 import entities.PhongBan;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.Point;
+import java.awt.Component;
+import java.awt.HeadlessException;
+import java.awt.Image;
 
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import java.util.List;
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JSlider;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.event.MouseInputListener;
 import javax.swing.table.DefaultTableModel;
 
 public final class DanhGia extends JInternalFrame {
@@ -54,6 +52,10 @@ public final class DanhGia extends JInternalFrame {
     DanhGiaMgr danhGiaMgr = new DanhGiaMgr();
     JRadioButton rbtnTot_Cv, rbtnKha_Cv, rbtnTB_Cv, rbtnYeu_Cv, rbtnTot_KN, rbtnKha_KN, rbtnTB_KN, rbtnYeu_KN, rbtnTot_yt, rbtnKha_yt, rbtnTB_yt, rbtnYeu_yt, rbtnTot_HD, rbtnKha_HD, rbtnTB_HD, rbtnYeu_HD;
     JTextArea txtArea;
+    private JPanel panel3;
+    JSlider CVHT, KNLV, YTLV, TGHD;
+    String img;
+    JButton btnAnh;
 
     public DanhGia() {
         initViewDanhGia_btn();
@@ -71,28 +73,79 @@ public final class DanhGia extends JInternalFrame {
     }
 
     private void initViewDanhGia_btn() {
+        panel3 = new JPanel();
+        panel3.setBorder(new TitledBorder(null, null, TitledBorder.CENTER, TitledBorder.DEFAULT_POSITION));
+        panel3.setBounds(370, 20, 580, 400);
+        panel3.setLayout(null);
+        add(panel3);
         // TODO Auto-generated method stub
         ImageIcon icon = new ImageIcon("src\\image\\search.png");
         btnSearch = new JButton("Tìm Kiếm", icon);
-        btnSearch.setBounds(30, 450, 125, 30);
+        btnSearch.setBounds(380, 450, 125, 30);
+        btnSearch.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                String maNhanVien = txtID.getText();
+
+                if (maNhanVien.equals("")) {
+                    JOptionPane.showMessageDialog(TGHD, "Mời bạn chọn nhân viên muốn tìm danh sách đánh giá");
+
+                    return;
+                }
+                String quyDanhGia = "";
+                String namDanhGia = "";
+                if (cbQuy.getSelectedIndex() != 0) {
+                    quyDanhGia = cbQuy.getSelectedItem().toString();
+                }
+
+                if (cbYear.getSelectedIndex() != 0) {
+                    namDanhGia = cbYear.getSelectedItem().toString();
+                }
+                System.out.println(maNhanVien + " manhanvien " + quyDanhGia + " quy danh gia " + namDanhGia);
+                try {
+                    List<Danhgia> list = danhGiaMgr.getListDanhGiaByFilter(maNhanVien, quyDanhGia, namDanhGia);
+                    if (list != null) {
+                        loadSlider(list);
+                        loadTableDanhGia(list);
+                        JOptionPane.showMessageDialog(cbQuy, "Thông tin đánh giá nhân viên như sau: ");
+                    } else {
+                        JOptionPane.showMessageDialog(cbQuy, "Chưa có bản ghi đánh giá nhân viên trong thời gian bạn tìm ");
+                        defaultTableModel1.fireTableDataChanged();
+                        defaultTableModel1.setRowCount(0);
+                    }
+
+                } catch (HeadlessException e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(cbQuy, "Không tồn tại lớp đào tạo có thông tin như trên ");
+                }
+            }
+        });
 
         ImageIcon icon6 = new ImageIcon("src\\image\\them.png");
         btnNew = new JButton("Làm Mới", icon6);
-        btnNew.setBounds(170, 450, 125, 30);
+        btnNew.setBounds(520, 450, 125, 30);
         btnNew.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                cmbPhongBan.setSelectedIndex(0);
-                txtID.setText("");
-                txtName.setText("");
+                loadMoi();
             }
         });
         ImageIcon icon1 = new ImageIcon("src\\image\\save.png");
         btnAdd = new JButton("Thêm", icon1);
-        btnAdd.setBounds(310, 450, 130, 30);
+        btnAdd.setBounds(660, 450, 130, 30);
         btnAdd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                String maNV = LoggedRole.getUsername();
+                String maPB = cmbPhongBan.getSelectedItem().toString();
+                System.out.println(maNV +" phòng ban"+maPB);
+                if (!LoggedRole.getLoggedRole().equals("SA")) {
+                    if (danhGiaMgr.checkTruongPhong(maNV, maPB) == false) {
+                        JOptionPane.showMessageDialog(cbQuy, "Bạn không thể đánh giá nhân viên phòng khác");
+                        return;
+                    }
+                }
+
                 if (txtID.getText().equals("")) {
                     JOptionPane.showMessageDialog(cbQuy, "Không để trống ID");
                     txtID.requestFocus();
@@ -148,21 +201,32 @@ public final class DanhGia extends JInternalFrame {
                 String nam = cbYear.getSelectedItem().toString();
                 String ghichu = txtArea.getText();
                 Danhgia danhgia = new Danhgia(maNhanVien, hoten, CVHThanh, KnLviec, YTLviec, TgiaHD, quy, nam, ghichu);
-                if (danhGiaMgr.saveDanhGia(danhgia)) {
+                if (danhGiaMgr.checkDanhGia(danhgia) == false) {
+                    danhGiaMgr.saveDanhGia(danhgia);
+                    loadMoi();
                     JOptionPane.showMessageDialog(cbQuy, "Lưu đánh giá thành công");
-                    initTable("");
                 } else {
-                    JOptionPane.showMessageDialog(cbQuy, "Lưu đánh giá thất bại");
+                    JOptionPane.showMessageDialog(cbQuy, "Lưu đánh giá thất bại\n\nNhân viên của bạn đã có 1 bản đánh giá vào thời gian này!!!\n\n Bạn muốn sửa đánh giá vui lòng tìm và chọn bản ghi");
                 }
+                initTableDanhGia();
             }
         });
 
         ImageIcon icon2 = new ImageIcon("src\\image\\edit.png");
         btnUpdate = new JButton("Sửa", icon2);
-        btnUpdate.setBounds(450, 450, 130, 30);
+        btnUpdate.setBounds(800, 450, 130, 30);
         btnUpdate.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
+                String maNV = LoggedRole.getUsername();
+                String maPB = cmbPhongBan.getSelectedItem().toString();
+                if (!LoggedRole.getLoggedRole().equals("SA")) {
+                    if (danhGiaMgr.checkTruongPhong(maNV, maPB) == false) {
+                        JOptionPane.showMessageDialog(cbQuy, "Bạn không thể đánh giá nhân viên phòng khác");
+                        return;
+                    }
+                }
+
                 if (txtID.getText().equals("")) {
                     JOptionPane.showMessageDialog(cbQuy, "Không để trống ID");
                     txtID.requestFocus();
@@ -214,30 +278,88 @@ public final class DanhGia extends JInternalFrame {
                 } else {
                     TgiaHD = "Yếu";
                 }
+                System.out.println(CVHThanh + "kỹ năng" + KnLviec + "ý thức làm việc" + YTLviec + "Tham gia" + TgiaHD);
                 String quy = cbQuy.getSelectedItem().toString();
                 String nam = cbYear.getSelectedItem().toString();
                 String ghichu = txtArea.getText();
                 Danhgia danhgia = new Danhgia(maNhanVien, hoten, CVHThanh, KnLviec, YTLviec, TgiaHD, quy, nam, ghichu);
                 if (danhGiaMgr.saveDanhGia(danhgia)) {
                     JOptionPane.showMessageDialog(cbQuy, "Cập nhật đánh giá thành công");
-                
+                    loadMoi();
                 } else {
                     JOptionPane.showMessageDialog(cbQuy, "Cập nhật đánh giá thất bại");
                 }
-                 initTable("");
+                initTableDanhGia();
             }
         });
 
         ImageIcon icon3 = new ImageIcon("src\\image\\delete.png");
         btnDelete = new JButton("Xóa", icon3);
-        btnDelete.setBounds(590, 450, 130, 30);
+        btnDelete.setBounds(940, 450, 130, 30);
 
         add(btnAdd);
-        add(btnDelete);
         add(btnNew);
         add(btnSearch);
         add(btnUpdate);
+        CVHT = new JSlider();
+        CVHT = new JSlider();
+        CVHT.setPaintLabels(true);
+//        CVHT.setPaintTicks(true);
+        CVHT.setEnabled(false);
+        CVHT.setMajorTickSpacing(25);
 
+        KNLV = new JSlider();
+        KNLV = new JSlider();
+        KNLV.setPaintLabels(true);
+//        KNLV.setPaintTicks(true);
+        KNLV.setEnabled(false);
+        KNLV.setMajorTickSpacing(25);
+
+        YTLV = new JSlider();
+        YTLV = new JSlider();
+        YTLV.setPaintLabels(true);
+//        YTLV.setPaintTicks(true);
+        YTLV.setEnabled(false);
+        YTLV.setMajorTickSpacing(25);
+
+        TGHD = new JSlider();
+        TGHD = new JSlider();
+        TGHD.setPaintLabels(true);
+//        TGHD.setPaintTicks(true);
+        TGHD.setEnabled(false);
+        TGHD.setMajorTickSpacing(25);
+
+        Dictionary<Integer, Component> labelTable = new Hashtable<Integer, Component>();
+        labelTable.put(100, new JLabel("Tốt"));
+        labelTable.put(75, new JLabel("Khá"));
+        labelTable.put(50, new JLabel("TB"));
+        labelTable.put(25, new JLabel("Yếu"));
+
+        JLabel CVHT1 = new JLabel("CVHT");
+        add(CVHT1);
+        CVHT1.setBounds(20, 220, 50, 50);
+
+        CVHT.setLabelTable(labelTable);
+        add(CVHT);
+        CVHT.setBounds(70, 230, 250, 50);
+        JLabel KNLV1 = new JLabel("KNLV");
+        add(KNLV1);
+        KNLV1.setBounds(20, 290, 50, 50);
+        KNLV.setLabelTable(labelTable);
+        add(KNLV);
+        KNLV.setBounds(70, 300, 250, 50);
+        JLabel YTLV1 = new JLabel("YTLV");
+        add(YTLV1);
+        YTLV1.setBounds(20, 370, 50, 50);
+        YTLV.setLabelTable(labelTable);
+        add(YTLV);
+        YTLV.setBounds(70, 380, 250, 50);
+        JLabel TGHD1 = new JLabel("TGHD");
+        add(TGHD1);
+        TGHD1.setBounds(20, 450, 50, 50);
+        TGHD.setLabelTable(labelTable);
+        add(TGHD);
+        TGHD.setBounds(70, 460, 250, 50);
     }
 
     private void initViewDanhGia_table() {
@@ -247,7 +369,7 @@ public final class DanhGia extends JInternalFrame {
         // Tạo bảng bên Phải
         // *********************************************
         JScrollPane scrollPane = new JScrollPane();
-        scrollPane.setBounds(750, 100, 300, 380);
+        scrollPane.setBounds(960, 100, 380, 380);
         add(scrollPane);
 
         defaultTableModel = new DefaultTableModel(new Object[][]{},
@@ -260,7 +382,7 @@ public final class DanhGia extends JInternalFrame {
         //Tạo Bảng Bên Duoi
         //***************************************************
         JScrollPane scrollPane1 = new JScrollPane();
-        scrollPane1.setBounds(10, 520, 1300, 200);
+        scrollPane1.setBounds(10, 520, 1350, 200);
         add(scrollPane1);
 
         defaultTableModel1 = new DefaultTableModel(new Object[][]{},
@@ -277,7 +399,54 @@ public final class DanhGia extends JInternalFrame {
         defaultTableModel1.setRowCount(0);
         try {
             List<Danhgia> list = danhGiaMgr.getListDanhGia("");
-            System.out.println(list.size() + " nè");
+            if (!list.isEmpty()) {
+                for (Danhgia E : list) {
+                    defaultTableModel1.addRow(new Object[]{
+                        E.getMaNhanVien(), E.getHoTen(), E.getCongViecHoanThanh(), E.getKyNangLamViec(), E.getyThucLamViec(), E.getThamGiaHoatDong(), E.getQuyDanhGia(), E.getNamDanhGia(), E.getGhiChu()
+                    });
+                }
+
+            }
+            jTableBottom.setModel(defaultTableModel1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        jTableBottom.getSelectionModel()
+                .addListSelectionListener(new ListSelectionListener() {
+                    @Override
+                    public void valueChanged(ListSelectionEvent lse
+                    ) {
+                        if (lse.getValueIsAdjusting()) {
+                            return;
+                        }
+                        int index = jTableBottom.getSelectedRow();
+                        if (index >= 0) {
+                            String maNhanVien = jTableBottom.getValueAt(index, 0).toString();
+                            String HoTen = jTableBottom.getValueAt(index, 1).toString();
+                            txtID.setText(maNhanVien);
+                            txtName.setText(HoTen);
+                            String CVHThanh = jTableBottom.getValueAt(index, 2).toString();
+                            setCVHThanhRatio(CVHThanh);
+                            String kyNangLV = jTableBottom.getValueAt(index, 3).toString();
+                            setkyNangLVRatio(kyNangLV);
+                            String yThucHD = jTableBottom.getValueAt(index, 4).toString();
+                            setyThucHDRatio(yThucHD);
+                            String thamGiaHD = jTableBottom.getValueAt(index, 5).toString();
+                            setthamGiaHDRatio(thamGiaHD);
+                            cbQuy.setSelectedItem(jTableBottom.getValueAt(index, 6));
+                            cbYear.setSelectedItem(jTableBottom.getValueAt(index, 7));
+                        }
+                    }
+                }
+                );
+
+    }
+
+    private void loadTableDanhGia(List<Danhgia> list) {
+        defaultTableModel1.fireTableDataChanged();
+        defaultTableModel1 = (DefaultTableModel) jTableBottom.getModel();
+        defaultTableModel1.setRowCount(0);
+        try {
             if (!list.isEmpty()) {
                 for (Danhgia E : list) {
                     defaultTableModel1.addRow(new Object[]{
@@ -325,25 +494,25 @@ public final class DanhGia extends JInternalFrame {
         // TODO Auto-generated method stub
 
         txtID = new JTextField();
-        txtID.setBounds(400, 100, 320, 20);
+        txtID.setBounds(200, 20, 320, 20);
         txtID.setEditable(false);
         txtName = new JTextField();
-        txtName.setBounds(400, 140, 320, 20);
+        txtName.setBounds(200, 60, 320, 20);
         txtName.setEditable(false);
         // *******************************************************
         // Cong Việc Hoàn Thành
         // *******************************************************
         rbtnTot_Cv = new JRadioButton("Tốt");
-        rbtnTot_Cv.setBounds(400, 170, 70, 20);
+        rbtnTot_Cv.setBounds(200, 100, 70, 20);
         rbtnTot_Cv.setSelected(true);
         rbtnKha_Cv = new JRadioButton("Khá");
-        rbtnKha_Cv.setBounds(480, 170, 70, 20);
+        rbtnKha_Cv.setBounds(280, 100, 70, 20);
 
         rbtnTB_Cv = new JRadioButton("Trung Bình");
-        rbtnTB_Cv.setBounds(560, 170, 100, 20);
+        rbtnTB_Cv.setBounds(360, 100, 100, 20);
 
         rbtnYeu_Cv = new JRadioButton("Yếu");
-        rbtnYeu_Cv.setBounds(670, 170, 70, 20);
+        rbtnYeu_Cv.setBounds(460, 100, 70, 20);
 
         ButtonGroup gb1 = new ButtonGroup();
         gb1.add(rbtnYeu_Cv);
@@ -355,16 +524,16 @@ public final class DanhGia extends JInternalFrame {
         // Kỹ Năng Làm Việc
         // **************************************************8**
         rbtnTot_KN = new JRadioButton("Tốt");
-        rbtnTot_KN.setBounds(400, 200, 70, 20);
+        rbtnTot_KN.setBounds(200, 140, 70, 20);
         rbtnTot_KN.setSelected(true);
         rbtnKha_KN = new JRadioButton("Khá");
-        rbtnKha_KN.setBounds(480, 200, 70, 20);
+        rbtnKha_KN.setBounds(280, 140, 70, 20);
 
         rbtnTB_KN = new JRadioButton("Trung Bình");
-        rbtnTB_KN.setBounds(560, 200, 100, 20);
+        rbtnTB_KN.setBounds(360, 140, 100, 20);
 
         rbtnYeu_KN = new JRadioButton("Yếu");
-        rbtnYeu_KN.setBounds(670, 200, 70, 20);
+        rbtnYeu_KN.setBounds(460, 140, 70, 20);
 
         ButtonGroup gb2 = new ButtonGroup();
         gb2.add(rbtnYeu_KN);
@@ -376,105 +545,117 @@ public final class DanhGia extends JInternalFrame {
         // Y thuc lam viec
         // *****************************************************
         rbtnTot_yt = new JRadioButton("Tốt");
-        rbtnTot_yt.setBounds(400, 230, 70, 20);
+        rbtnTot_yt.setBounds(200, 180, 70, 20);
         rbtnTot_yt.setSelected(true);
         rbtnKha_yt = new JRadioButton("Khá");
-        rbtnKha_yt.setBounds(480, 230, 70, 20);
+        rbtnKha_yt.setBounds(280, 180, 70, 20);
 
         rbtnTB_yt = new JRadioButton("Trung Bình");
-        rbtnTB_yt.setBounds(560, 230, 100, 20);
+        rbtnTB_yt.setBounds(360, 180, 100, 20);
 
         rbtnYeu_yt = new JRadioButton("Yếu");
-        rbtnYeu_yt.setBounds(670, 230, 70, 20);
+        rbtnYeu_yt.setBounds(460, 180, 70, 20);
 
+        ButtonGroup gb3 = new ButtonGroup();
+        gb3.add(rbtnTot_yt);
+        gb3.add(rbtnKha_yt);
+        gb3.add(rbtnTB_yt);
+        gb3.add(rbtnYeu_yt);
         // ****************************************************
         // Tham Gia Hoat Dong
         // ****************************************************
         rbtnTot_HD = new JRadioButton("Tốt");
-        rbtnTot_HD.setBounds(400, 260, 70, 20);
+        rbtnTot_HD.setBounds(200, 220, 70, 20);
         rbtnTot_HD.setSelected(true);
         rbtnKha_HD = new JRadioButton("Khá");
-        rbtnKha_HD.setBounds(480, 260, 70, 20);
+        rbtnKha_HD.setBounds(280, 220, 70, 20);
 
         rbtnTB_HD = new JRadioButton("Trung Bình");
-        rbtnTB_HD.setBounds(560, 260, 100, 20);
+        rbtnTB_HD.setBounds(360, 220, 100, 20);
 
         rbtnYeu_HD = new JRadioButton("Yếu");
-        rbtnYeu_HD.setBounds(670, 260, 70, 20);
+        rbtnYeu_HD.setBounds(460, 220, 70, 20);
+
+        ButtonGroup gb4 = new ButtonGroup();
+        gb4.add(rbtnTot_HD);
+        gb4.add(rbtnKha_HD);
+        gb4.add(rbtnTB_HD);
+        gb4.add(rbtnYeu_HD);
         // **************************************************
         // Thoi Gian Hoat Dong
         // ***************************************************
 
-        cbQuy = new JComboBox(new String[]{"Quý 1", "Quý 2", "Quý 3", "Quý 4"});
-        cbQuy.setBounds(400, 290, 75, 20);
+        cbQuy = new JComboBox(new String[]{"Chọn Quý", "Quý 1", "Quý 2", "Quý 3", "Quý 4"});
+        cbQuy.setBounds(240, 260, 125, 20);
 
-        cbYear = new JComboBox(new String[]{"2014", "2015", "2016", "2017", "2018", "2019"});
-        cbYear.setBounds(500, 290, 75, 20);
+        cbYear = new JComboBox(new String[]{"Chọn năm", "2014", "2015", "2016", "2017", "2018", "2019"});
+        cbYear.setBounds(400, 260, 125, 20);
 
         txtArea = new JTextArea(5, 5);
-        txtArea.setBounds(400, 320, 320, 100);
+        txtArea.setBounds(200, 300, 320, 80);
 
-        add(rbtnKha_Cv);
-        add(rbtnKha_HD);
-        add(rbtnKha_KN);
-        add(rbtnTB_Cv);
-        add(rbtnTB_HD);
-        add(rbtnTB_KN);
-        add(rbtnTot_Cv);
-        add(rbtnTot_HD);
-        add(rbtnTot_KN);
-        add(rbtnYeu_Cv);
-        add(rbtnYeu_HD);
-        add(rbtnYeu_KN);
-        add(rbtnKha_yt);
-        add(rbtnTB_yt);
-        add(rbtnTot_yt);
-        add(rbtnYeu_yt);
-        add(cbQuy);
-        add(cbYear);
-        add(txtArea);
-        add(txtID);
-        add(txtName);
+        JScrollPane textArea = new JScrollPane(txtArea);
+        textArea.setBounds(200, 300, 320, 80);
+        textArea.setVisible(true);
+        add(textArea);
+        txtArea.setLineWrap(true);
+
+        panel3.add(rbtnKha_Cv);
+        panel3.add(rbtnKha_HD);
+        panel3.add(rbtnKha_KN);
+        panel3.add(rbtnTB_Cv);
+        panel3.add(rbtnTB_HD);
+        panel3.add(rbtnTB_KN);
+        panel3.add(rbtnTot_Cv);
+        panel3.add(rbtnTot_HD);
+        panel3.add(rbtnTot_KN);
+        panel3.add(rbtnYeu_Cv);
+        panel3.add(rbtnYeu_HD);
+        panel3.add(rbtnYeu_KN);
+        panel3.add(rbtnKha_yt);
+        panel3.add(rbtnTB_yt);
+        panel3.add(rbtnTot_yt);
+        panel3.add(rbtnYeu_yt);
+        panel3.add(cbQuy);
+        panel3.add(cbYear);
+        panel3.add(txtArea);
+        panel3.add(txtID);
+        panel3.add(txtName);
+        panel3.add(textArea);
     }
 
     private void initViewDanhGia() {
         // TODO Auto-generated method stub
-        JButton btnAnh = new JButton("Ảnh");
-        btnAnh.setBounds(10, 100, 160, 300);
-
-        JLabel lblTitle = new JLabel("ĐÁNH GIÁ NHÂN VIÊN");
-        lblTitle.setBounds(400, 50, 300, 30);
+        btnAnh = new JButton("Ảnh");
+        btnAnh.setBounds(90, 10, 160, 200);
 
         JLabel lblId = new JLabel("Mã Nhân Viên");
-        lblId.setBounds(200, 100, 150, 20);
+        lblId.setBounds(50, 20, 150, 20);
 
         JLabel lblName = new JLabel("Tên Nhân Viên");
-        lblName.setBounds(200, 140, 150, 20);
+        lblName.setBounds(50, 60, 150, 20);
 
         JLabel lblCongViec = new JLabel("Công Việc Hoàn Thành");
-        lblCongViec.setBounds(200, 170, 150, 20);
+        lblCongViec.setBounds(50, 100, 150, 20);
 
         JLabel lblKyNang = new JLabel("Kỹ Năng Làm Việc");
-        lblKyNang.setBounds(200, 200, 150, 20);
+        lblKyNang.setBounds(50, 140, 150, 20);
 
         JLabel lblYThuc = new JLabel("Ý Thức Làm Việc");
-        lblYThuc.setBounds(200, 230, 150, 20);
+        lblYThuc.setBounds(50, 180, 150, 20);
 
         JLabel lblThamGia = new JLabel("Tham Gia Hoạt Động");
-        lblThamGia.setBounds(200, 260, 150, 20);
+        lblThamGia.setBounds(50, 220, 150, 20);
 
         JLabel lblTime = new JLabel("Thời Gian Đánh Giá");
-        lblTime.setBounds(200, 290, 150, 20);
+        lblTime.setBounds(50, 260, 150, 20);
 
         JLabel lblGhiChu = new JLabel("Ghi Chú");
-        lblGhiChu.setBounds(200, 320, 150, 20);
+        lblGhiChu.setBounds(50, 300, 150, 20);
 
-        JLabel phongBan = new JLabel("MÃ PHÒNG BAN");
-        phongBan.setBounds(50, 100, 150, 25);
-        add(phongBan);
         fillCombobox();
         cmbPhongBan = new JComboBox(Name);
-        cmbPhongBan.setBounds(850, 50, 200, 30);
+        cmbPhongBan.setBounds(1050, 50, 200, 30);
         cmbPhongBan.setSelectedIndex(0);
         cmbPhongBan.setBackground(Color.white);
         JScrollPane ListScrollPane = new JScrollPane(cmbPhongBan);
@@ -498,15 +679,14 @@ public final class DanhGia extends JInternalFrame {
             }
         });
         add(btnAnh);
-        add(lblCongViec);
-        add(lblGhiChu);
-        add(lblId);
-        add(lblKyNang);
-        add(lblName);
-        add(lblThamGia);
-        add(lblTime);
-        add(lblTitle);
-        add(lblYThuc);
+        panel3.add(lblCongViec);
+        panel3.add(lblGhiChu);
+        panel3.add(lblId);
+        panel3.add(lblKyNang);
+        panel3.add(lblName);
+        panel3.add(lblThamGia);
+        panel3.add(lblTime);
+        panel3.add(lblYThuc);
 
     }
 
@@ -539,6 +719,7 @@ public final class DanhGia extends JInternalFrame {
                     i++;
                 }
                 jTableRight.setModel(defaultTableModel);
+
             }
 
         } catch (Exception e) {
@@ -559,6 +740,9 @@ public final class DanhGia extends JInternalFrame {
                             String HoTen = jTableRight.getValueAt(index, 2).toString();
                             txtID.setText(maNhanVien);
                             txtName.setText(HoTen);
+                            img = jTableRight.getValueAt(index, 3).toString();
+                            System.out.println(img);
+                            upImage(img);
                         }
                     }
                 }
@@ -668,5 +852,95 @@ public final class DanhGia extends JInternalFrame {
             rbtnTB_HD.setSelected(false);
             rbtnYeu_HD.setSelected(true);
         }
+    }
+
+    public void upImage(String img) {
+        System.out.println(img + " ten file là");
+        ImageIcon anh = new ImageIcon("src\\image\\CV\\" + img);
+        Image image = anh.getImage();
+        ImageIcon anh1 = new ImageIcon(image.getScaledInstance(btnAnh.getWidth(), btnAnh.getHeight(), image.SCALE_SMOOTH));
+        btnAnh.setIcon(anh1);
+    }
+
+    public void loadSlider(List<Danhgia> list) {
+        int CVHT_gt = 0;
+        int KNLV_gt = 0;
+        int YTLV_gt = 0;
+        int TGHD_gt = 0;
+        for (int i = 0; i < list.size(); i++) {
+            Danhgia danhgia = new Danhgia();
+            danhgia = list.get(i);
+            switch (danhgia.getCongViecHoanThanh()) {
+                case "Tốt":
+                    CVHT_gt += 100;
+                    break;
+                case "Khá":
+                    CVHT_gt += 80;
+                    break;
+                case "Trung Bình":
+                    CVHT_gt += 60;
+                    break;
+                case "Yếu":
+                    CVHT_gt += 40;
+                    break;
+            }
+            switch (danhgia.getKyNangLamViec()) {
+                case "Tốt":
+                    KNLV_gt += 100;
+                    break;
+                case "Khá":
+                    KNLV_gt += 80;
+                    break;
+                case "Trung Bình":
+                    KNLV_gt += 60;
+                    break;
+                case "Yếu":
+                    KNLV_gt += 40;
+                    break;
+            }
+            switch (danhgia.getyThucLamViec()) {
+                case "Tốt":
+                    YTLV_gt += 100;
+                    break;
+                case "Khá":
+                    YTLV_gt += 80;
+                    break;
+                case "Trung Bình":
+                    YTLV_gt += 60;
+                    break;
+                case "Yếu":
+                    YTLV_gt += 40;
+                    break;
+            }
+            switch (danhgia.getThamGiaHoatDong()) {
+                case "Tốt":
+                    TGHD_gt += 100;
+                    break;
+                case "Khá":
+                    TGHD_gt += 80;
+                    break;
+                case "Trung Bình":
+                    TGHD_gt += 60;
+                    break;
+                case "Yếu":
+                    TGHD_gt += 40;
+                    break;
+            }
+        }
+        System.out.println(CVHT_gt / list.size() + " kỹ năng làm việc" + KNLV_gt / list.size() + " ý thức làm việc " + YTLV_gt / list.size() + " tham gia hoạt đọng" + TGHD_gt / list.size());
+        CVHT.setValue(CVHT_gt / list.size());
+        KNLV.setValue(KNLV_gt / list.size());
+        YTLV.setValue(YTLV_gt / list.size());
+        TGHD.setValue(TGHD_gt / list.size());
+    }
+
+    public void loadMoi() {
+        cmbPhongBan.setSelectedIndex(0);
+        txtID.setText("");
+        txtName.setText("");
+        defaultTableModel1.fireTableDataChanged();
+        defaultTableModel1.setRowCount(0);
+        cbQuy.setSelectedIndex(0);
+        cbYear.setSelectedIndex(0);
     }
 }

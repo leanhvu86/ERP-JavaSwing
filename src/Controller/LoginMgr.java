@@ -3,6 +3,9 @@ package Controller;
 import DAO.LoginDAOImpl;
 import DAO.LoginDAO;
 import entities.Config;
+import entities.TaiKhoan;
+import java.sql.SQLException;
+import java.util.List;
 
 public class LoginMgr {
 
@@ -20,7 +23,7 @@ public class LoginMgr {
 
     }
 
-    public boolean checkDataBase(String url, String username, String password) {
+    public boolean checkDataBase(String url, String username, String password) throws SQLException {
         try {
 
             return loginDAOImpl.checkDataBase(url, username, password);
@@ -30,6 +33,41 @@ public class LoginMgr {
 
         return false;
 
+    }
+
+    public boolean saveTaiKhoan(TaiKhoan taiKhoan) {
+        try {
+
+            return loginDAOImpl.saveTaiKhoan(taiKhoan);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+
+    }
+
+    public boolean xoaTaiKhoan(TaiKhoan taiKhoan) {
+        try {
+
+            return loginDAOImpl.xoaTaiKhoan(taiKhoan);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+
+    }
+
+    public List<TaiKhoan> getListTaiKhoan(String MaNhanVien) {
+        try {
+
+            return loginDAOImpl.getListTaiKhoan(MaNhanVien);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     public Config getConnfig() {

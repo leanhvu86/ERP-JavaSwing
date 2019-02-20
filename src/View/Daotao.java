@@ -5,7 +5,6 @@ import entities.DaoTao;
 import entities.LoggedRole;
 import entities.NhanVien;
 import entities.PhongBan;
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -20,8 +19,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -41,7 +38,6 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.event.MouseInputListener;
 import javax.swing.table.DefaultTableModel;
 
 public final class Daotao extends JInternalFrame {
@@ -554,7 +550,7 @@ public final class Daotao extends JInternalFrame {
                 });
                 listNhanVien.setModel(model);
             }
-
+            System.out.println(" danh sách"+danhsach);
         } catch (Exception e) {
             e.printStackTrace();
         }

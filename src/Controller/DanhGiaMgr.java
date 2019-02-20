@@ -29,7 +29,7 @@ public class DanhGiaMgr {
     }
 
     public boolean saveDanhGia(Danhgia danhgia) {
-      
+
         try {
             return danhGiaDAOImpl.saveDanhGia(danhgia);
 
@@ -38,5 +38,37 @@ public class DanhGiaMgr {
         }
         return false;
     }
-    
+
+    public boolean checkDanhGia(Danhgia danhgia) {
+
+        try {
+            return danhGiaDAOImpl.checkDanhGia(danhgia.getMaNhanVien(), danhgia.getQuyDanhGia(), danhgia.getNamDanhGia());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public List<Danhgia> getListDanhGiaByFilter(String maNhanVien, String quy, String nam) {
+        try {
+
+            return danhGiaDAOImpl.getListDanhGiaByFilter(maNhanVien, quy, nam);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public boolean checkTruongPhong(String maNhanVien,String maPhongBan) {
+
+        try {
+            return danhGiaDAOImpl.checkTruongPhong(maNhanVien,maPhongBan);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

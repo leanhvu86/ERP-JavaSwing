@@ -6,7 +6,6 @@
 package DAO;
 
 import entities.Danhgia;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,6 +14,37 @@ import java.util.List;
  */
 public interface DanhGiaDAO {
 
+    /**
+     *
+     * @param maNhanVien
+     * @return
+     */
     public List<Danhgia> getListDanhGia(String maNhanVien);
-     public boolean saveDanhGia(Danhgia danhgia);
+
+    /**
+     *
+     * @param danhgia
+     * @return
+     */
+    public boolean saveDanhGia(Danhgia danhgia);
+
+    /**
+     *
+     * @param maNhanVien
+     * @param Quy
+     * @param Nam
+     * @return
+     */
+    public boolean checkDanhGia(String maNhanVien, String Quy, String Nam);
+
+    /**
+     *
+     * @param maNhanVien
+     * @param quy
+     * @param nam
+     * @return
+     */
+    public List<Danhgia> getListDanhGiaByFilter(String maNhanVien, String quy, String nam);
+    
+    public boolean checkTruongPhong(String maNhanVien,String maPhongBan);
 }

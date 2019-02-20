@@ -115,6 +115,7 @@ public class DaoTaoDAOImpl implements DaoTaoDAO {
                 if (st.getUpdateCount() > 0) {
                     return true;
                 }
+                System.out.println(sql);
                 st.close();
                 con.close();
 
@@ -144,7 +145,7 @@ public class DaoTaoDAOImpl implements DaoTaoDAO {
                 }
                 st.close();
                 con.close();
-
+                System.out.println(sql);
             } catch (Exception e) {
                 System.out.println(e);
                 return false;
@@ -165,6 +166,7 @@ public class DaoTaoDAOImpl implements DaoTaoDAO {
             ps.setString(1, maLop);
             ResultSet rs = ps.executeQuery();
             boolean isExist = rs.next();
+            System.out.println(isExist);
             if (isExist == true) {
                 return true;
             }
@@ -252,7 +254,7 @@ public class DaoTaoDAOImpl implements DaoTaoDAO {
                 sql += "and tungay >= '" + tuNgay+"'";
             }
             if (denNgay != null && !denNgay.equals("")) {
-                sql += "and denngay >= '" + denNgay+"'";
+                sql += "and denngay <= '" + denNgay+"'";
             }
             System.out.println(" câu truy vấn: " + sql);
             PreparedStatement ps = con.prepareStatement(sql);

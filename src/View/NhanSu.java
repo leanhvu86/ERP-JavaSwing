@@ -5,7 +5,8 @@ package View;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import entities.SqlUI;
+import Controller.LoginMgr;
+import entities.Config;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -14,7 +15,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -67,11 +67,13 @@ public class NhanSu extends JInternalFrame {
     String[] loaihopdong = {"Hợp đồng 1 năm", "Hợp đồng 3 năm", "Hợp đồng dài hạn"};
     DefaultTableModel defaultTableModel;
     DefaultMutableTreeNode root, ketoan, nhansu, kinhdoanh, hanhchinh;
-    String url, sql;
+    String  sql;
     Connection con;
-    SqlUI sqlUI = new SqlUI();
-    private String username = sqlUI.getUserName();
-    private String password = sqlUI.getPassword();
+    LoginMgr loginMgr=new LoginMgr();
+    Config config = loginMgr.getConnfig();
+    private final String username = config.getUserName();
+    private final String password = config.getPassword();
+    private final String url = config.getUrl();
     String img = null;
 
     public NhanSu() {
@@ -343,7 +345,6 @@ public class NhanSu extends JInternalFrame {
                 kiemtra();
                 try {
                     Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-                    url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
                     con = DriverManager.getConnection(url, username, password);
 
                     String sql1 = "insert into NhanVien values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
@@ -686,7 +687,6 @@ public class NhanSu extends JInternalFrame {
         defaultTableModel.setRowCount(0);
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
             con = DriverManager.getConnection(url, username, password);
             System.out.println("Chuc Mung Ban Da Ket Noi Den Toi");
             sql = "select * from NhanVien";
@@ -724,7 +724,6 @@ public class NhanSu extends JInternalFrame {
     public boolean update() {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
             con = DriverManager.getConnection(url, username, password);
             sql = "update NhanVien set HoTen=?,NgaySinh=?,GioiTinh=?,DiaChi=?,SoDienThoai=?,Email=?,TheCC=?,TrinhDo=?,"
                     + "LoaiTotNghiep=?,ChuyenNganh=?,NgoaiNgu=?,NgayVaoLam=?,MaPhongBan=?,TenPhongBan=?,ChucVu=?,MaThue=?,LoaiHD=?,Anh=? where MaNhanVien =?";
@@ -850,7 +849,6 @@ public class NhanSu extends JInternalFrame {
                 JOptionPane.YES_NO_OPTION);
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            url = "jdbc:sqlserver://localhost:1433;databaseName=EmployeeManager";
             con = DriverManager.getConnection(url, username, password);
             PreparedStatement pp = con.prepareStatement(sql);
             String sql = "delete from NhanVien where MaNhanVien=?";
