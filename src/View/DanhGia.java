@@ -200,6 +200,10 @@ public final class DanhGia extends JInternalFrame {
                 String quy = cbQuy.getSelectedItem().toString();
                 String nam = cbYear.getSelectedItem().toString();
                 String ghichu = txtArea.getText();
+                if(cbQuy.getSelectedIndex()==0||cbYear.getSelectedIndex()==0){
+                    JOptionPane.showMessageDialog(cbQuy, "Vui lòng chọn quý và năm đánh giá nhân viên");
+                    return;
+                }
                 Danhgia danhgia = new Danhgia(maNhanVien, hoten, CVHThanh, KnLviec, YTLviec, TgiaHD, quy, nam, ghichu);
                 if (danhGiaMgr.checkDanhGia(danhgia) == false) {
                     danhGiaMgr.saveDanhGia(danhgia);
