@@ -5,77 +5,54 @@
  */
 package entities;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Win
  */
-public class NhanVien {
-    private int id;
-    private String maNhanVien,tenNhanVien,ngaySinh,maPhongBan,gioiTinh,dienThoai,diaChi,email,theCanCuoc,chuyenNganh,cVHoanThanh,kNLamViec,yThucLamViec,thamGiaHD,anhCaNhan,cVBanThan,ghiChu,maNhomQuyen,passWord;
+public class NhanVien implements Serializable {
 
+    private String maNhanVien, tenNhanVien, ngaysinh,gioitinh ,diachi, sdt, email, cmnd, trinhdo, totnghiep,
+            chuyennghanh, ngonngu, ngayvaolam, maPhongBan, tenpb, chucvu, masothue, loaihd, anh;
+
+    public NhanVien(String maNhanVien, String tenNhanVien, String ngaysinh, String gioitinh, String diachi, String sdt, String email, String cmnd, String trinhdo, String totnghiep, String chuyennghanh, String ngonngu, String ngayvaolam, String maPhongBan, String tenpb, String chucvu, String masothue, String loaihd, String anh) {
+        this.maNhanVien = maNhanVien;
+        this.tenNhanVien = tenNhanVien;
+        this.ngaysinh = ngaysinh;
+        this.gioitinh = gioitinh;
+        this.diachi = diachi;
+        this.sdt = sdt;
+        this.email = email;
+        this.cmnd = cmnd;
+        this.trinhdo = trinhdo;
+        this.totnghiep = totnghiep;
+        this.chuyennghanh = chuyennghanh;
+        this.ngonngu = ngonngu;
+        this.ngayvaolam = ngayvaolam;
+        this.maPhongBan = maPhongBan;
+        this.tenpb = tenpb;
+        this.chucvu = chucvu;
+        this.masothue = masothue;
+        this.loaihd = loaihd;
+        this.anh = anh;
+    }
+
+    public NhanVien(String maNhanVien, String tenNhanVien, String anh) {
+        this.maNhanVien = maNhanVien;
+        this.tenNhanVien = tenNhanVien;
+        this.anh = anh;
+    }
+
+    
     public NhanVien() {
     }
+//  private String maNhanVien,tenNhanVien,ngaySinh,maPhongBan,gioiTinh,dienThoai
+//          ,diaChi,email,theCanCuoc,chuyenNganh,cVHoanThanh,kNLamViec,yThucLamViec
+//          ,thamGiaHD,anhCaNhan,cVBanThan,ghiChu,maNhomQuyen,passWord;
 
-    public NhanVien(String maNhanVien, String tenNhanVien, String anhCaNhan) {
-        this.maNhanVien = maNhanVien;
-        this.tenNhanVien = tenNhanVien;
-        this.anhCaNhan = anhCaNhan;
-    }
-
-
-
-    public NhanVien( String maNhanVien, String tenNhanVien, String ngaySinh, String maPhongBan, String gioiTinh, String dienThoai, String diaChi, String email, String theCanCuoc, String chuyenNganh, String cVHoanThanh, String kNLamViec, String yThucLamViec, String thamGiaHD, String anhCaNhan, String cVBanThan, String ghiChu, String maNhomQuyen) {
-       
-        this.maNhanVien = maNhanVien;
-        this.tenNhanVien = tenNhanVien;
-        this.ngaySinh = ngaySinh;
-        this.maPhongBan = maPhongBan;
-        this.gioiTinh = gioiTinh;
-        this.dienThoai = dienThoai;
-        this.diaChi = diaChi;
-        this.email = email;
-        this.theCanCuoc = theCanCuoc;
-        this.chuyenNganh = chuyenNganh;
-        this.cVHoanThanh = cVHoanThanh;
-        this.kNLamViec = kNLamViec;
-        this.yThucLamViec = yThucLamViec;
-        this.thamGiaHD = thamGiaHD;
-        this.anhCaNhan = anhCaNhan;
-        this.cVBanThan = cVBanThan;
-        this.ghiChu = ghiChu;
-        this.maNhomQuyen = maNhomQuyen;
-    }
-
-    public NhanVien( String maNhanVien, String tenNhanVien, String ngaySinh, String maPhongBan, String gioiTinh, String dienThoai, String diaChi, String email, String theCanCuoc, String chuyenNganh, String cVHoanThanh, String kNLamViec, String yThucLamViec, String thamGiaHD, String anhCaNhan, String cVBanThan, String ghiChu, String maNhomQuyen, String passWord) {
-        this.maNhanVien = maNhanVien;
-        this.tenNhanVien = tenNhanVien;
-        this.ngaySinh = ngaySinh;
-        this.maPhongBan = maPhongBan;
-        this.gioiTinh = gioiTinh;
-        this.dienThoai = dienThoai;
-        this.diaChi = diaChi;
-        this.email = email;
-        this.theCanCuoc = theCanCuoc;
-        this.chuyenNganh = chuyenNganh;
-        this.cVHoanThanh = cVHoanThanh;
-        this.kNLamViec = kNLamViec;
-        this.yThucLamViec = yThucLamViec;
-        this.thamGiaHD = thamGiaHD;
-        this.anhCaNhan = anhCaNhan;
-        this.cVBanThan = cVBanThan;
-        this.ghiChu = ghiChu;
-        this.maNhomQuyen = maNhomQuyen;
-        this.passWord = passWord;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
+    
+    
     public String getMaNhanVien() {
         return maNhanVien;
     }
@@ -92,44 +69,36 @@ public class NhanVien {
         this.tenNhanVien = tenNhanVien;
     }
 
-    public String getNgaySinh() {
-        return ngaySinh;
+    public String getNgaysinh() {
+        return ngaysinh;
     }
 
-    public void setNgaySinh(String ngaySinh) {
-        this.ngaySinh = ngaySinh;
+    public void setNgaysinh(String ngaysinh) {
+        this.ngaysinh = ngaysinh;
     }
 
-    public String getMaPhongBan() {
-        return maPhongBan;
+    public String getGioitinh() {
+        return gioitinh;
     }
 
-    public void setMaPhongBan(String maPhongBan) {
-        this.maPhongBan = maPhongBan;
+    public void setGioitinh(String gioitinh) {
+        this.gioitinh = gioitinh;
     }
 
-    public String getGioiTinh() {
-        return gioiTinh;
+    public String getDiachi() {
+        return diachi;
     }
 
-    public void setGioiTinh(String gioiTinh) {
-        this.gioiTinh = gioiTinh;
+    public void setDiachi(String diachi) {
+        this.diachi = diachi;
     }
 
-    public String getDienThoai() {
-        return dienThoai;
+    public String getSdt() {
+        return sdt;
     }
 
-    public void setDienThoai(String dienThoai) {
-        this.dienThoai = dienThoai;
-    }
-
-    public String getDiaChi() {
-        return diaChi;
-    }
-
-    public void setDiaChi(String diaChi) {
-        this.diaChi = diaChi;
+    public void setSdt(String sdt) {
+        this.sdt = sdt;
     }
 
     public String getEmail() {
@@ -140,92 +109,101 @@ public class NhanVien {
         this.email = email;
     }
 
-    public String getTheCanCuoc() {
-        return theCanCuoc;
+    public String getCmnd() {
+        return cmnd;
     }
 
-    public void setTheCanCuoc(String theCanCuoc) {
-        this.theCanCuoc = theCanCuoc;
+    public void setCmnd(String cmnd) {
+        this.cmnd = cmnd;
     }
 
-    public String getChuyenNganh() {
-        return chuyenNganh;
+    public String getTrinhdo() {
+        return trinhdo;
     }
 
-    public void setChuyenNganh(String chuyenNganh) {
-        this.chuyenNganh = chuyenNganh;
+    public void setTrinhdo(String trinhdo) {
+        this.trinhdo = trinhdo;
     }
 
-    public String getcVHoanThanh() {
-        return cVHoanThanh;
+    public String getTotnghiep() {
+        return totnghiep;
     }
 
-    public void setcVHoanThanh(String cVHoanThanh) {
-        this.cVHoanThanh = cVHoanThanh;
+    public void setTotnghiep(String totnghiep) {
+        this.totnghiep = totnghiep;
     }
 
-    public String getkNLamViec() {
-        return kNLamViec;
+    public String getChuyennghanh() {
+        return chuyennghanh;
     }
 
-    public void setkNLamViec(String kNLamViec) {
-        this.kNLamViec = kNLamViec;
+    public void setChuyennghanh(String chuyennghanh) {
+        this.chuyennghanh = chuyennghanh;
     }
 
-    public String getyThucLamViec() {
-        return yThucLamViec;
+    public String getNgonngu() {
+        return ngonngu;
     }
 
-    public void setyThucLamViec(String yThucLamViec) {
-        this.yThucLamViec = yThucLamViec;
+    public void setNgonngu(String ngonngu) {
+        this.ngonngu = ngonngu;
     }
 
-    public String getThamGiaHD() {
-        return thamGiaHD;
+    public String getNgayvaolam() {
+        return ngayvaolam;
     }
 
-    public void setThamGiaHD(String thamGiaHD) {
-        this.thamGiaHD = thamGiaHD;
+    public void setNgayvaolam(String ngayvaolam) {
+        this.ngayvaolam = ngayvaolam;
     }
 
-    public String getAnhCaNhan() {
-        return anhCaNhan;
+    public String getMaPhongBan() {
+        return maPhongBan;
     }
 
-    public void setAnhCaNhan(String anhCaNhan) {
-        this.anhCaNhan = anhCaNhan;
+    public void setMaPhongBan(String maPhongBan) {
+        this.maPhongBan = maPhongBan;
     }
 
-    public String getcVBanThan() {
-        return cVBanThan;
+    public String getTenpb() {
+        return tenpb;
     }
 
-    public void setcVBanThan(String cVBanThan) {
-        this.cVBanThan = cVBanThan;
+    public void setTenpb(String tenpb) {
+        this.tenpb = tenpb;
     }
 
-    public String getGhiChu() {
-        return ghiChu;
+    public String getChucvu() {
+        return chucvu;
     }
 
-    public void setGhiChu(String ghiChu) {
-        this.ghiChu = ghiChu;
+    public void setChucvu(String chucvu) {
+        this.chucvu = chucvu;
     }
 
-    public String getMaNhomQuyen() {
-        return maNhomQuyen;
+    public String getMasothue() {
+        return masothue;
     }
 
-    public void setMaNhomQuyen(String maNhomQuyen) {
-        this.maNhomQuyen = maNhomQuyen;
+    public void setMasothue(String masothue) {
+        this.masothue = masothue;
     }
 
-    public String getPassWord() {
-        return passWord;
+    public String getLoaihd() {
+        return loaihd;
     }
 
-    public void setPassWord(String passWord) {
-        this.passWord = passWord;
+    public void setLoaihd(String loaihd) {
+        this.loaihd = loaihd;
     }
-    
+
+    public String getAnh() {
+        return anh;
+    }
+
+    public void setAnh(String anh) {
+        this.anh = anh;
+    }
+
+   
 }

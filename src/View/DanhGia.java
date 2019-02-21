@@ -715,7 +715,7 @@ public final class DanhGia extends JInternalFrame {
             if (list.size() > 0) {
                 for (NhanVien E : list) {
                     int i = 1;
-                    defaultTableModel.addRow(new Object[]{i, E.getMaNhanVien(), E.getTenNhanVien(), E.getAnhCaNhan()});
+                    defaultTableModel.addRow(new Object[]{i, E.getMaNhanVien(), E.getTenNhanVien(), E.getAnh()});
                     i++;
                 }
                 jTableRight.setModel(defaultTableModel);

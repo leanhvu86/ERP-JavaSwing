@@ -70,7 +70,7 @@ public class DaoTaoDAOImpl implements DaoTaoDAO {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
 
             try (Connection con = DriverManager.getConnection(url, username, password)) {
-                String sql = "select * from NhanVien where 1=1 and MaPhongBan=?";
+                String sql = "select * from NhanVien where status=1 and MaPhongBan=?";
                 PreparedStatement ps = con.prepareStatement(sql);
                 ps.setString(1, maPhongBan);
                 System.out.println(sql + "            select nè");

@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -383,7 +384,7 @@ public class TuyenDung extends JInternalFrame {
                 Tuyendung td = new Tuyendung();
                 Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
                 con = DriverManager.getConnection(url, username, password);
-                String sql = "insert into Tuyendung values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                String sql = "insert into Tuyendung values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
                 PreparedStatement st = con.prepareStatement(sql);
                 st.setString(1, txt_id.getText());
                 st.setString(2, txt_hoten.getText());
@@ -405,6 +406,7 @@ public class TuyenDung extends JInternalFrame {
                 st.setString(11, txt_vitri.getText());
                 st.setString(12, (String) cbb_chuyennganh.getSelectedItem());
                 st.setString(13, txt_ngonngu.getText());
+
                 String kn;
                 if (ra_co.isSelected()) {
                     kn = "Có";
@@ -415,7 +417,7 @@ public class TuyenDung extends JInternalFrame {
                 st.setString(15, (String) cbb_nam2.getSelectedItem());
                 st.setString(16, (String) cbb_dot2.getSelectedItem());
                 st.setString(17, img);
-
+                st.setString(18, "1");
                 st.executeUpdate();
 
                 list_TD = getListTD();
@@ -423,12 +425,12 @@ public class TuyenDung extends JInternalFrame {
                 fillTable();
                 loadDbToTable();
                 clear();
-                upImage(img);
+
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, "ID đã tồn tại. Vui lòng nhập lại ID");
                 txt_id.requestFocus();
-
                 e.printStackTrace();
+                return;
             }
         }
     }
@@ -481,7 +483,6 @@ public class TuyenDung extends JInternalFrame {
                     JOptionPane.showMessageDialog(null, "Ðã cập nhật thành công");
                     fillTable();
                     loadDbToTable();
-                    upImage(img);
                 } catch (Exception e) {
                     System.out.println(e);
 
@@ -523,7 +524,7 @@ public class TuyenDung extends JInternalFrame {
         cbb_dot1.setFont(new Font("Tahoma", Font.PLAIN, 13));
         panel1.add(cbb_dot1);
 
-        cbb_chuyennganh2 = new JComboBox(new String[]{"Công nghề thông tin", "Tài chính Kế toán", "Thiết bị di động", "Quản trị nhân lực"});
+        cbb_chuyennganh2 = new JComboBox(new String[]{"Công nghệ thông tin", "Tài chính Kế toán", "Hành chính", "Quản trị nhân lực"});
         cbb_chuyennganh2.setBounds(520, 30, 250, 25);
         cbb_chuyennganh2.setFont(new Font("Tahoma", Font.PLAIN, 13));
         panel1.add(cbb_chuyennganh2);
@@ -669,12 +670,12 @@ public class TuyenDung extends JInternalFrame {
         lbl_chuyennganh.setFont(new Font("Tahoma", Font.BOLD, 13));
         panel2.add(lbl_chuyennganh);
 
-        cbb_chuyennganh = new JComboBox(new String[]{"Công nghệ thông tin", "Tài chính Kế toán", "Thiết bị di dộng", "Quản trị nhân lực"});
+        cbb_chuyennganh = new JComboBox(new String[]{"Công nghệ thông tin", "Tài chính Kế toán", "Hành chính", "Quản trị nhân lực"});
         cbb_chuyennganh.setBounds(520, 170, 250, 25);
         cbb_chuyennganh.setFont(new Font("Tahoma", Font.PLAIN, 13));
         panel2.add(cbb_chuyennganh);
 
-        lbl_ngonngu = new JLabel("Ngoọai ngữ");
+        lbl_ngonngu = new JLabel("Ngoại ngữ");
         lbl_ngonngu.setBounds(400, 205, 100, 25);
         lbl_ngonngu.setFont(new Font("Tahoma", Font.BOLD, 13));
         panel2.add(lbl_ngonngu);
@@ -795,6 +796,14 @@ public class TuyenDung extends JInternalFrame {
         btn_timkiem.setBounds(840, 25, 120, 30);
         btn_timkiem.setForeground(Color.blue);
         panel1.add(btn_timkiem);
+        btn_timkiem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                model_TD.fireTableDataChanged();
+                model_TD.setRowCount(0);
+                Timkiem();
+            }
+        });
 
         ImageIcon first = new ImageIcon("src//image//first.png");
         btn_first = new JButton(first);
@@ -968,36 +977,6 @@ public class TuyenDung extends JInternalFrame {
         }
     }
 
-//    private void Timkiem() {
-//                
-//                if (txt_timkiem.getText().equals("")) {
-//                    JOptionPane.showMessageDialog(null,"Nh?p mã sinh viên c?n tìm");
-//                    return;
-//                } else {
-//                    int count = 0;
-//                    for (Student sv : list_sv) {
-//                        if (txt_timkiem.getText().equalsIgnoreCase(sv.getMasv())) {
-//                            txt_masv.setText(sv.getMasv());
-//                            txt_hoten.setText(sv.getHoten());
-//                            txt_email.setText(sv.getEmail());
-//                            txt_sdt.setText(sv.getSodt());
-//                            ta_diachi.setText(sv.getDiachi());
-//                            if (sv.isGioitinh() == true) {
-//                                ra_nam.setSelected(true);
-//                            } else {
-//                                ra_nu.setSelected(true);
-//                            }
-//                            count++;
-//                            JOptionPane.showMessageDialog(txt_masv, "Ðã tìm th?y mã sinh viên.\nThông tin nhu sau");
-//                        }
-//                    }
-//                    if (count == 0) {
-//                        JOptionPane.showMessageDialog(null,"Mã sinh viên không t?n t?i");
-//                    }
-//
-//                }
-//    }
-//  
     public void Display() {
         Tuyendung td = list_TD.get(index);
         txt_id.setText(td.getId());
@@ -1026,35 +1005,115 @@ public class TuyenDung extends JInternalFrame {
         }
         cbb_nam2.setSelectedItem(td.getNam());
         cbb_dot2.setSelectedItem(td.getDot());
+        img = (td.getAnh());
+        upImage(img);
         tbl_tuyendung.setRowSelectionInterval(index, index);
     }
 
-    public void duyet() {
-//        try {
-//            Tuyendung sv = new Tuyendung();
-//            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-//            con = DriverManager.getConnection("jdbc:sqlserver://localhost:1433;databaseName=Employee;user=sa;password=luong123");
-//            
-//            String sql2 = "insert into DIEM (masv,tienganh,tinhoc,gdtc) values \n"
-//                    + "(?,?,?,?)";
-//            PreparedStatement st2 = con.prepareStatement(sql2);
-//            st2.setString(1, txt_masv.getText());
-//            st2.setDouble(2, 0);
-//            st2.setDouble(3, 0);
-//            st2.setDouble(4, 0);
-//            st2.executeUpdate();
-//
-//            JOptionPane.showMessageDialog(null, "Luu thành công");
-//            fillTable();
-//            list_sinhvien = getListStudent();
-//            loadDbToTable();
-//
-//        } catch (Exception e) {
-//            JOptionPane.showMessageDialog(null, "Không d? trùng mã sinh viên");
-//            clear();
-//            return;
-//
-//        }
+    private void Timkiem() {
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            con = DriverManager.getConnection(url, username, password);
+            String sql1 = "select * from Tuyendung where nam=N'" + cbb_nam1.getSelectedItem() + "' and dot =N'"
+                    + cbb_dot1.getSelectedItem() + "' and chuyennganh =N'" + cbb_chuyennganh2.getSelectedItem() + "'";
+            Statement sttt = con.createStatement();
+            ResultSet rs = sttt.executeQuery(sql1);
+            int count = 0;
+            while (rs.next()) {
 
+                if (cbb_nam1.getSelectedItem().equals(rs.getString(15)) && cbb_dot1.getSelectedItem().equals(rs.getString(16))
+                        && cbb_chuyennganh2.getSelectedItem().equals(rs.getString(12))) {
+                    Vector row = new Vector();
+                    row.add(rs.getString(1));
+                    row.add(rs.getString(2));
+                    row.add(rs.getString(3));
+                    row.add(rs.getString(4));
+                    row.add(rs.getString(5));
+                    row.add(rs.getString(6));
+                    row.add(rs.getString(7));
+                    row.add(rs.getString(8));
+                    row.add(rs.getString(9));
+                    row.add(rs.getString(10));
+                    row.add(rs.getString(11));
+                    row.add(rs.getString(12));
+                    row.add(rs.getString(13));
+                    row.add(rs.getString(14));
+                    row.add(rs.getString(15));
+                    row.add(rs.getString(16));
+                    row.add(rs.getString(17));
+                    model_TD.addRow(row);
+
+                }
+                count++;
+            }
+
+            if (count == 0) {
+                JOptionPane.showMessageDialog(null, "Không tìm thấy ứng viên");
+
+            } else {
+                JOptionPane.showMessageDialog(null, "Đã tìm thấy ứng viên");
+            }
+        } catch (Exception e) {
+        }
+
+    }
+
+    public void duyet() {
+        if (txt_id.getText().equals("")) {
+            JOptionPane.showMessageDialog(null, "Chọn ứng viên cần duyệt");
+            return;
+        } else if (check()) {
+
+            try {
+                Tuyendung td = new Tuyendung();
+                Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+                con = DriverManager.getConnection(url, username, password);
+                String sql2 = "insert into Nhanvien (MaNhanVien,HoTen,NgaySinh,GioiTinh,DiaChi,SoDienThoai,Email,TheCC,TrinhDo,"
+                        + "LoaiTotNghiep,ChuyenNganh,NgoaiNgu,NgayVaoLam,MaPhongBan,TenPhongBan,"
+                        + "ChucVu,MaThue,LoaiHD,Anh,Status) values \n"
+                        + "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                PreparedStatement st2 = con.prepareStatement(sql2);
+                st2.setString(1, txt_id.getText());
+                st2.setString(2, txt_hoten.getText());
+                st2.setString(3, txt_ngaysinh.getText());
+                String gt;
+                if (ra_nam.isSelected()) {
+                    gt = "Nam";
+                } else {
+                    gt = "Nữ";
+                }
+                st2.setString(4, gt);
+                st2.setString(5, txt_noisinh.getText());
+                st2.setString(6, txt_sdt.getText());
+                st2.setString(7, txt_email.getText());
+                st2.setString(8, txt_cmnd.getText());
+                st2.setString(9, (String) cbb_trinhdo.getSelectedItem());
+                st2.setString(10, (String) cbb_totnghiep.getSelectedItem());
+                st2.setString(11, (String) cbb_chuyennganh.getSelectedItem());
+                st2.setString(12, txt_ngonngu.getText());
+                st2.setString(13, null);
+                st2.setString(14, null);
+                st2.setString(15, null);
+                st2.setString(16, null);
+                st2.setString(17, null);
+                st2.setString(18, null);
+                st2.setString(19, img);
+                st2.setString(20, "1");
+                st2.executeUpdate();
+
+                index = tbl_tuyendung.getSelectedRow();
+                delete();
+                list_TD.remove(index);
+                fillTable();
+                loadDbToTable();
+                clear();
+                JOptionPane.showMessageDialog(null, "Chúc mừng bạn đã duyệt thành công");
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e);
+                return;
+
+            }
+        }
     }
 }

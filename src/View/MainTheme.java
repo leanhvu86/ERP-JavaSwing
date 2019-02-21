@@ -38,10 +38,11 @@ public final class MainTheme extends JFrame implements Runnable {
     DanhGia danhGia;
     JMenuBar jMenuBar;
     private JLabel lblTime;
-    boolean DTao = false, TDung = false, DGia = false, NSu = false, TKe = false, HT = false;
+    boolean DTao = false, TDung = false, DGia = false, NSu = false, TKe = false, HT = false, AD = false;
     LoginMgr loginMgr = new LoginMgr();
     Hethongcongty hethongcongty;
     JDesktopPane jDesktopPane;
+    Admin admin;
 
     public MainTheme() {
         initView();
@@ -359,28 +360,8 @@ public final class MainTheme extends JFrame implements Runnable {
             public void actionPerformed(ActionEvent ae) {
 
                 try {
-                    DGia = false;
-                    danhGia.setVisible(DGia);
-                } catch (Exception e) {
-                }
-                try {
-                    TDung = false;
-                    tuyenDung.setVisible(TDung);
-                } catch (Exception e) {
-                }
-                try {
-                    TKe = false;
-                    thongKe.setVisible(TKe);
-                } catch (Exception e) {
-                }
-                try {
-                    DTao = false;
-                    daotao.setVisible(DTao);
-                } catch (Exception e) {
-                }
-                try {
-                    NSu = false;
-                    nhanSu.setVisible(NSu);
+                    AD = false;
+                    admin.setVisible(AD);
                 } catch (Exception e) {
                 }
                 if (HT == true) {
@@ -400,7 +381,16 @@ public final class MainTheme extends JFrame implements Runnable {
         btn3.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                Admin admin = new Admin();
+
+                try {
+                    HT = false;
+                    nhanSu.setVisible(NSu);
+                } catch (Exception e) {
+                }
+                if (HT == true) {
+                    return;
+                }
+                admin = new Admin();
                 admin.setLocation(0, 50);
                 admin.setVisible(true);
                 jDesktopPane.add(admin);
